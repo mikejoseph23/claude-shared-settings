@@ -1,0 +1,5 @@
+{
+  "puppeteer": false,
+  "postgres": false,
+  "filesystem": false
+}

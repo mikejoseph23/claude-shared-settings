@@ -1,19 +1,68 @@
-# Shared Claude Code Custom Commands
+# Shared Claude Code Configuration
 
-This repository contains custom slash commands for Claude Code that can be shared across multiple computers and user profiles.
+This repository contains custom slash commands and skills for Claude Code that can be shared across multiple computers and user profiles.
 
 **Location:** Part of the Interapp Development corporate repository at `~/git/claude-shared-settings`
+
+## Table of Contents
+
+- [Repository Structure](#repository-structure)
+- [Commands Available](#commands-available)
+  - [/iadev:make-planning-document](#iadevmake-planning-document)
+  - [/iadev:planning-interview](#iadevplanning-interview)
+  - [/iadev:market-research](#iadevmarket-research)
+  - [/iadev:update-scratchpad](#iadevupdate-scratchpad)
+- [Skills Available](#skills-available)
+  - [Requirements Interviewer](#requirements-interviewer)
+- [Plugins Available](#plugins-available)
+  - [MCP Manager](#mcp-manager)
+- [Setup Instructions](#setup-instructions)
+- [Git Integration](#git-integration)
+- [Workflow for Updates](#workflow-for-updates)
+- [Adding New Commands](#adding-new-commands)
+- [Benefits of This Approach](#benefits-of-this-approach)
+
+---
 
 ## Repository Structure
 
 ```
-claude-commands-shared/
-├── README.md
-└── iadev/
-    └── make-planning-document.md
+claude-shared-settings/
+├── README.md                    # This file - overview and quick start
+├── SETUP.md                     # Comprehensive setup guide (RECOMMENDED)
+├── agent-ideas.md               # Agent implementation ideas (AI-generated)
+├── backlog.md                   # Future enhancements and ideas
+├── scratchpad.md                # Current work in progress
+├── commands/                    # Slash commands (manual invocation)
+│   ├── make-planning-document.md
+│   ├── planning-interview.md
+│   ├── market-research.md
+│   └── update-scratchpad.md
+├── skills/                      # Skills (automatic activation)
+│   └── requirements-interviewer/
+│       └── SKILL.md
+├── plugins/                     # Plugins (startup hooks and utilities)
+│   └── mcp-manager/
+│       ├── PLUGIN.md            # Plugin metadata
+│       ├── README.md            # Usage documentation
+│       ├── on-client-start.js   # Startup hook script
+│       └── config/
+│           ├── enabled-mcps.json    # Toggle servers on/off
+│           └── mcp-servers.json     # Server definitions
+└── setup/                       # Setup scripts and documentation
+    ├── setup.sh                 # Mac/Linux setup script
+    ├── setup.ps1                # Windows setup script (admin)
+    ├── setup-no-admin.ps1       # Windows setup script (no admin)
+    └── update.ps1               # Windows update script (for copy mode)
 ```
 
+[⬆ Back to Top](#shared-claude-code-custom-commands)
+
+---
+
 ## Commands Available
+
+All commands are prefixed with `iadev:` when used via symlinks in your projects.
 
 ### `/iadev:make-planning-document`
 
@@ -45,91 +94,236 @@ To make the planning document in the root folder with additional instructions:
 /iadev:make-planning-document roadmap.md organize by timeline phases
 ```
 
+---
+
+### `/iadev:planning-interview`
+
+Conducts an interactive interview with the user to gather detailed information for a planning document section.
+
+**Features:**
+
+- Asks one question at a time
+- Waits for answers before proceeding
+- Asks thoughtful, relevant questions based on the section topic and previous answers
+- Summarizes gathered information
+- Updates the specified planning document section with the interview results
+
+**Usage:**
+
+```bash
+/iadev:planning-interview
+```
+
+The command will first ask which planning document and section you want to work on, then guide you through an interactive interview process.
+
+---
+
+### `/iadev:market-research`
+
+Conducts comprehensive competitive analysis and market research with structured, well-documented findings.
+
+**Features:**
+
+- Creates organized research workspace with flat folder structure
+- Produces executive summary with links to supporting documents
+- Handles multiple input formats (descriptions, files, URLs, prior research)
+- Flags discrepancies and gaps in research
+- Delivers actionable insights with proper citations
+
+**Usage:**
+
+```bash
+/iadev:market-research
+```
+
+The command will guide you through defining research objectives, conducting analysis, and producing a findings document with supporting materials organized in a working folder.
+
+**Output Structure:**
+- Centralized findings document with executive summary
+- Supporting research documents in working folder
+- Issues/discrepancies flagged appropriately
+- Clean hierarchical linking (main findings → supporting docs → nested details)
+
+---
+
+### `/iadev:update-scratchpad`
+
+Reviews the scratchpad document and updates it to reflect current progress.
+
+**Features:**
+
+- Identifies and moves completed work to a "Completed Work" section at the bottom
+- Marks or removes completed todo items from active sections
+- Updates status indicators (✅, ⏳, 📋, ❌)
+- Updates "Next Steps" to show remaining work clearly
+
+**Usage:**
+
+```bash
+/iadev:update-scratchpad
+```
+
+**Goal:** Keep the scratchpad focused on remaining work. Completed work is archived at the bottom, and the scratchpad eventually becomes empty when a phase is complete.
+
+[⬆ Back to Top](#shared-claude-code-custom-commands)
+
+---
+
+## Skills Available
+
+Skills are **automatically discovered capabilities** that extend Claude's expertise. Unlike commands which you explicitly invoke, Claude uses skills automatically when relevant to your conversation.
+
+### Requirements Interviewer
+
+Expert at conducting requirements interviews and gathering detailed specifications.
+
+**When Claude Uses It:** Automatically activated when you need to gather requirements, conduct stakeholder interviews, clarify feature specifications, or extract technical details from business needs.
+
+**Trigger Words:** "requirements", "interview", "gather specifications", "what should this feature do", "help me understand what they need"
+
+**What It Provides:**
+- Strategic questioning techniques (Five Whys, scenario-based, edge cases)
+- Active listening and synthesis capabilities
+- Requirement quality validation (specific, measurable, achievable, relevant, traceable)
+- Structured interview process with context setting, deep dive, and validation phases
+- Best practices for different stakeholder types (technical, business, end users, executives)
+
+**Example Usage:**
+
+```
+You: "I need to gather requirements for a new invoicing feature"
+
+Claude: [Automatically engages requirements-interviewer skill]
+"Let me help you gather requirements for the invoicing feature.
+To start, can you walk me through how invoicing is currently
+handled in your system?"
+```
+
+**Location:** `skills/requirements-interviewer/SKILL.md`
+
+📖 **For detailed skills setup instructions, see [SKILLS-SETUP.md](SKILLS-SETUP.md)**
+
+[⬆ Back to Top](#shared-claude-code-custom-commands)
+
+---
+
+## Plugins Available
+
+Plugins extend Claude Code with startup hooks and utilities that run automatically.
+
+### MCP Manager
+
+Control which MCP (Model Context Protocol) servers are loaded without manually editing configuration files.
+
+**What It Does:**
+- Manages MCP server activation via simple JSON configuration
+- Automatically updates Claude config on startup
+- Prevents context budget issues by letting you easily disable unused servers
+- Version control your MCP server preferences via git
+
+**Configuration Files:**
+
+1. **`plugins/mcp-manager/config/enabled-mcps.json`** - Toggle servers on/off:
+   ```json
+   {
+     "puppeteer": false,
+     "postgres": false,
+     "filesystem": false
+   }
+   ```
+
+2. **`plugins/mcp-manager/config/mcp-servers.json`** - Define server configurations:
+   ```json
+   {
+     "puppeteer": {
+       "command": "npx",
+       "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
+     }
+   }
+   ```
+
+**Usage:**
+
+```bash
+# Enable Puppeteer for web research
+vim plugins/mcp-manager/config/enabled-mcps.json
+# Set "puppeteer": true
+
+# Restart Claude Code to load the server
+```
+
+**Benefits:**
+- ✅ No manual config file editing
+- ✅ Quick toggle without surgery on `claude_desktop_config.json`
+- ✅ Control context budget by disabling unused servers
+- ✅ Share team MCP setup via git
+
+**Location:** `plugins/mcp-manager/`
+
+📖 **For detailed plugin documentation, see [plugins/mcp-manager/README.md](plugins/mcp-manager/README.md)**
+
+[⬆ Back to Top](#shared-claude-code-custom-commands)
+
+---
+
 ## Setup Instructions
 
-### Initial Setup (First Computer/Profile)
+### Quick Setup
 
-This has already been completed for the personal profile (michaeljoseph):
-
-```bash
-# 1. Repository created at ~/git/claude-commands-shared
-# 2. Commands moved to repository
-# 3. Symlink created from ~/.claude/commands/iadev to ~/git/claude-shared-settings/iadev
-# 4. Git initialized and committed
-```
-
-### Setup on Additional Computers (Mac/Linux)
-
-To use these commands on another Mac or Linux computer:
+**Mac/Linux - One Command:**
 
 ```bash
-# 1. Clone the Interapp repo (if not already cloned)
-git clone <interapp-repo-url> ~/git/claude-shared-settings
-
-# 2. Create the commands directory if it doesn't exist
-mkdir -p ~/.claude/commands
-
-# 3. Create symlink
-ln -s ~/git/claude-commands-shared/iadev ~/.claude/commands/iadev
-
-# 4. Verify the command is available
-# Open Claude Code and type /iadev:make-planning-document
+cd ~/git/claude-shared-settings && \
+mkdir -p ~/.claude/commands ~/.claude/plugins && \
+ln -sf ~/git/claude-shared-settings/commands ~/.claude/commands/iadev && \
+ln -sf ~/git/claude-shared-settings/skills ~/.claude/skills && \
+ln -sf ~/git/claude-shared-settings/plugins/mcp-manager ~/.claude/plugins/mcp-manager && \
+echo "✅ Setup complete! Restart Claude Code."
 ```
 
-### Setup on Another Profile (Same Mac)
-
-For the work profile (michaeljosephinterapp) on this iMac:
+**Or run the setup script:**
 
 ```bash
-# 1. Create commands directory if needed
-mkdir -p /Users/michaeljosephinterapp/.claude/commands
-
-# 2. Create symlink to the shared repository
-ln -s /Users/michaeljoseph/git/claude-shared-settings/iadev /Users/michaeljosephinterapp/.claude/commands/iadev
-
-# 3. Verify the command is available
-# Open Claude Code and type /iadev:make-planning-document
+cd ~/git/claude-shared-settings
+./setup/setup.sh
 ```
 
-### Setup on Windows Dev Environment
+**Windows - Run Setup Script:**
 
-Windows handles symlinks differently. You have two options:
+```powershell
+# As Administrator (recommended - creates symlinks)
+cd $env:USERPROFILE\git\claude-shared-settings
+.\setup\setup.ps1
 
-**Option A: Using mklink (Requires Administrator privileges)**
-
-```cmd
-REM Run Command Prompt or PowerShell as Administrator
-
-REM 1. Clone the Interapp repo (if not already cloned)
-git clone <interapp-repo-url> %USERPROFILE%\git\interapp
-
-REM 2. Create the commands directory if it doesn't exist
-mkdir %USERPROFILE%\.claude\commands
-
-REM 3. Create symlink (requires admin)
-mklink /D %USERPROFILE%\.claude\commands\iadev %USERPROFILE%\git\interapp\claude-commands-shared\iadev
+# OR without admin (copies files, requires manual sync)
+.\setup\setup-no-admin.ps1
 ```
 
-**Option B: Copy files instead of symlink (No admin required, but requires manual sync)**
+### Comprehensive Setup Guide
 
-```cmd
-REM 1. Clone the Interapp repo
-git clone <interapp-repo-url> %USERPROFILE%\git\interapp
+📖 **See [SETUP.md](SETUP.md) for complete instructions including:**
 
-REM 2. Create the commands directory
-mkdir %USERPROFILE%\.claude\commands
+- Detailed setup for Mac/Linux and Windows
+- Multiple Windows options (symlink vs copy)
+- What gets installed (commands, skills, and plugins)
+- Verification steps
+- Update procedures
+- Troubleshooting guide
+- Setup scripts reference
 
-REM 3. Copy the commands (run this after each git pull to sync changes)
-xcopy /E /I %USERPROFILE%\git\interapp\claude-commands-shared\iadev %USERPROFILE%\.claude\commands\iadev
-```
+[⬆ Back to Top](#shared-claude-code-custom-commands)
 
-**Recommendation for Windows:** Use Option A (mklink) if you have admin access. If not, use Option B but remember to re-copy files after pulling updates from git.
+---
 
 ## Git Integration
 
 This folder is part of the Interapp corporate git repository. Changes should be committed and pushed as part of the Interapp repo workflow.
 
-**Note:** Since this is a subfolder of `~/git/interapp/`, it's already under version control. No separate git remote is needed - it syncs with your main Interapp repository.
+**Note:** Since this is a subfolder of `~/git/claude-shared-settings/`, it's already under version control. No separate git remote is needed - it syncs with your repository.
+
+[⬆ Back to Top](#shared-claude-code-custom-commands)
+
+---
 
 ## Workflow for Updates
 
@@ -139,11 +333,10 @@ This folder is part of the Interapp corporate git repository. Changes should be 
 cd ~/git/claude-shared-settings
 
 # Edit command files as needed
-vim iadev/make-planning-document.md
+vim commands/make-planning-document.md
 
-# Commit changes (from Interapp repo root)
-cd ~/git/interapp
-git add claude-commands-shared/
+# Commit changes
+git add commands/
 git commit -m "Update Claude commands: make-planning-document"
 git push
 ```
@@ -153,35 +346,37 @@ git push
 **Mac/Linux with symlinks:**
 
 ```bash
-cd ~/git/interapp
+cd ~/git/claude-shared-settings
 git pull
 # Changes are immediately available in Claude Code via symlink
 ```
 
-**Windows with mklink:**
+**Windows with symlink (Option 1):**
 
-```cmd
-cd %USERPROFILE%\git\interapp
+```powershell
+cd $env:USERPROFILE\git\claude-shared-settings
 git pull
-REM Changes are immediately available in Claude Code via symlink
+# Changes are immediately available in Claude Code via symlink
 ```
 
-**Windows with copied files (Option B):**
+**Windows with copied files (Option 2):**
 
-```cmd
-cd %USERPROFILE%\git\interapp
+```powershell
+cd $env:USERPROFILE\git\claude-shared-settings
 git pull
-
-REM Re-copy files to sync changes
-xcopy /E /I /Y %USERPROFILE%\git\interapp\claude-commands-shared\iadev %USERPROFILE%\.claude\commands\iadev
+.\setup\update.ps1
 ```
+
+[⬆ Back to Top](#shared-claude-code-custom-commands)
+
+---
 
 ## Adding New Commands
 
-### Create a New Command
+### Create a New Command in iadev Namespace
 
 ```bash
-cd ~/git/claude-shared-settings/iadev
+cd ~/git/claude-shared-settings/commands
 
 # Create new command file
 cat > new-command.md << 'EOF'
@@ -194,11 +389,12 @@ Your command prompt here with $ARGUMENTS
 EOF
 
 # Commit and push
-cd ~/git/interapp
-git add claude-commands-shared/
+git add new-command.md
 git commit -m "Add new iadev command: new-command"
 git push
 ```
+
+The command will be available as `/iadev:new-command` after syncing.
 
 ### Create a New Command Namespace
 
@@ -206,10 +402,10 @@ git push
 cd ~/git/claude-shared-settings
 
 # Create new namespace directory
-mkdir my-namespace
+mkdir new-namespace
 
 # Add command
-cat > my-namespace/my-command.md << 'EOF'
+cat > new-namespace/my-command.md << 'EOF'
 ---
 description: My custom command
 ---
@@ -217,15 +413,26 @@ description: My custom command
 Command prompt here
 EOF
 
-# Create symlink in each profile
-ln -s ~/git/claude-shared-settings/my-namespace ~/.claude/commands/my-namespace
+# Create symlink in each profile (Mac/Linux)
+ln -s ~/git/claude-shared-settings/new-namespace ~/.claude/commands/new-namespace
 
 # Commit and push
-cd ~/git/interapp
-git add claude-commands-shared/
-git commit -m "Add my-namespace commands"
+git add new-namespace/
+git commit -m "Add new-namespace commands"
 git push
 ```
+
+**Windows (with admin):**
+
+```powershell
+New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\commands\new-namespace" -Target "$env:USERPROFILE\git\claude-shared-settings\new-namespace"
+```
+
+The command will be available as `/new-namespace:my-command`.
+
+[⬆ Back to Top](#shared-claude-code-custom-commands)
+
+---
 
 ## Benefits of This Approach
 
@@ -233,62 +440,10 @@ git push
 ✅ **Sync Across Devices**: One git pull updates all computers
 ✅ **Share Between Profiles**: Multiple users can share the same commands
 ✅ **Team Collaboration**: Share with team members via corporate repo
-✅ **Backup**: Commands backed up with Interapp repository
+✅ **Backup**: Commands backed up with your repository
 ✅ **No Duplication**: Symlinks mean commands are only stored once
 ✅ **Corporate Integration**: Commands live alongside work projects
 ✅ **Cross-Platform**: Works on Mac, Linux, and Windows (with appropriate setup)
+✅ **Namespaced**: Commands use `iadev:` prefix to avoid conflicts with other commands
 
-## Troubleshooting
-
-### Command Not Showing Up
-
-1. Verify symlink exists:
-
-   ```bash
-   ls -la ~/.claude/commands/
-   ```
-
-2. Check symlink target is correct:
-
-   ```bash
-   readlink ~/.claude/commands/iadev
-   ```
-
-3. Verify command file exists:
-
-   ```bash
-   cat ~/git/claude-shared-settings/iadev/make-planning-document.md
-   ```
-
-### Symlink Broken After Moving Repository
-
-If you move the repository location, recreate symlinks:
-
-**Mac/Linux:**
-
-```bash
-rm ~/.claude/commands/iadev
-ln -s ~/git/claude-shared-settings/iadev ~/.claude/commands/iadev
-```
-
-**Windows (with admin):**
-
-```cmd
-rmdir %USERPROFILE%\.claude\commands\iadev
-mklink /D %USERPROFILE%\.claude\commands\iadev %USERPROFILE%\git\interapp\claude-commands-shared\iadev
-```
-
-## Repository Locations
-
-- **Desktop iMac (Personal Profile)**: `/Users/michaeljoseph/git/claude-shared-settings`
-- **Desktop iMac (Work Profile)**: Symlink to `/Users/michaeljoseph/git/claude-shared-settings/iadev`
-- **Laptop**: `~/git/claude-shared-settings` (after cloning Interapp repo)
-- **Windows Dev Machine**: `%USERPROFILE%\git\interapp\claude-commands-shared` (after cloning Interapp repo)
-
-## Next Steps
-
-- [ ] Set up on work profile (michaeljosephinterapp) on this iMac
-- [ ] Set up on laptop after format/fresh install
-- [ ] Set up on Windows dev environment (if applicable)
-- [ ] Create additional iadev commands as needed
-- [ ] Consider adding team-wide command namespaces for Interapp Development
+[⬆ Back to Top](#shared-claude-code-custom-commands)
