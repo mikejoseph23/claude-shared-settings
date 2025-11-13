@@ -49,114 +49,32 @@ ls -la ~/.claude/
 
 ### Windows Quick Setup
 
-#### Option 1: PowerShell Script (Recommended - Requires Admin)
-
-**Best option:** The setup script automatically detects your repository location.
-
-**To run:**
-1. Open PowerShell **as Administrator**
-2. Navigate to your repository (wherever you cloned it):
-   ```powershell
-   cd C:\git\claude-shared-settings
-   # OR
-   cd $env:USERPROFILE\git\claude-shared-settings
-   ```
-3. Run: `.\setup\setup-custom-path.ps1`
-4. Restart Claude Code
-
-The script (`setup/setup-custom-path.ps1`) looks like this:
+**One-command setup** - Open PowerShell **as Administrator**, then copy and paste this entire block:
 
 ```powershell
-# setup-custom-path.ps1 - Run as Administrator
-# For repositories in any location (auto-detects path)
-
-Write-Host "Setting up Claude Shared Settings..." -ForegroundColor Cyan
-
-# Get the current directory (should be the repo root)
-$repoPath = Get-Location
-
-Write-Host "Using repository path: $repoPath" -ForegroundColor Yellow
-
-# Create directories
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\commands" | Out-Null
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\plugins" | Out-Null
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude" | Out-Null
-
-# Create symlinks using current directory
-try {
-    New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\commands\iadev" -Target "$repoPath\commands" -Force | Out-Null
-    Write-Host "✅ Commands symlink created" -ForegroundColor Green
-} catch {
-    Write-Host "❌ Commands symlink failed: $_" -ForegroundColor Red
-}
-
-try {
-    New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\skills" -Target "$repoPath\skills" -Force | Out-Null
-    Write-Host "✅ Skills symlink created" -ForegroundColor Green
-} catch {
-    Write-Host "❌ Skills symlink failed: $_" -ForegroundColor Red
-}
-
-try {
-    New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\plugins\mcp-manager" -Target "$repoPath\plugins\mcp-manager" -Force | Out-Null
-    Write-Host "✅ MCP Manager plugin symlink created" -ForegroundColor Green
-} catch {
-    Write-Host "❌ MCP Manager symlink failed: $_" -ForegroundColor Red
-}
-
-# Verify
-Write-Host "`nVerifying installation:" -ForegroundColor Cyan
-Get-ChildItem "$env:USERPROFILE\.claude\commands\"
-Get-ChildItem "$env:USERPROFILE\.claude\skills\"
-Get-ChildItem "$env:USERPROFILE\.claude\plugins\"
-
-Write-Host "`n✅ Setup complete! Restart Claude Code." -ForegroundColor Green
-Write-Host "Commands available with /iadev: prefix" -ForegroundColor White
-Write-Host "Skills are active across all projects" -ForegroundColor White
-Write-Host "MCP Manager plugin installed" -ForegroundColor White
+cd C:\git\claude-shared-settings; `
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\commands" | Out-Null; `
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\plugins" | Out-Null; `
+New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\commands\iadev" -Target "C:\git\claude-shared-settings\commands" -Force; `
+New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\skills" -Target "C:\git\claude-shared-settings\skills" -Force; `
+New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\plugins\mcp-manager" -Target "C:\git\claude-shared-settings\plugins\mcp-manager" -Force; `
+Write-Host "`n✅ Setup complete! Commands available with /iadev: prefix" -ForegroundColor Green; `
+Write-Host "✅ Skills are now active across all projects" -ForegroundColor Green; `
+Write-Host "✅ MCP Manager plugin installed" -ForegroundColor Green; `
+Get-ChildItem "$env:USERPROFILE\.claude\"
 ```
 
-#### Option 2: No Admin - Copy Instead of Symlink
+**What this does:**
+1. Navigates to the repository at `C:\git\claude-shared-settings`
+2. Creates necessary directories in `%USERPROFILE%\.claude\`
+3. Creates symlink for commands (`%USERPROFILE%\.claude\commands\iadev`)
+4. Creates symlink for skills (`%USERPROFILE%\.claude\skills`)
+5. Creates symlink for MCP Manager plugin (`%USERPROFILE%\.claude\plugins\mcp-manager`)
+6. Confirms setup and shows your Claude directory
 
-Save this as `setup-no-admin.ps1`:
+**Note:** If your repository is in a different location, replace `C:\git\claude-shared-settings` with your actual path in the command above.
 
-```powershell
-# setup-no-admin.ps1 - No admin required
-Write-Host "Setting up Claude Shared Settings (copy mode)..." -ForegroundColor Cyan
-
-cd $env:USERPROFILE\git\claude-shared-settings
-
-# Create directories
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\commands" | Out-Null
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude" | Out-Null
-
-# Copy files
-Copy-Item -Path ".\commands" -Destination "$env:USERPROFILE\.claude\commands\iadev" -Recurse -Force
-Write-Host "✅ Commands copied" -ForegroundColor Green
-
-Copy-Item -Path ".\skills" -Destination "$env:USERPROFILE\.claude\skills" -Recurse -Force
-Write-Host "✅ Skills copied" -ForegroundColor Green
-
-Write-Host "`n✅ Setup complete! Restart Claude Code." -ForegroundColor Green
-Write-Host "⚠️  Note: You must re-run this script after 'git pull' to sync updates" -ForegroundColor Yellow
-```
-
-**To run:**
-1. Open regular PowerShell (no admin needed)
-2. Navigate: `cd $env:USERPROFILE\git\claude-shared-settings`
-3. Run: `.\setup\setup-no-admin.ps1`
-4. Restart Claude Code
-
-**Update script** (save as `update.ps1`):
-
-```powershell
-# update.ps1 - Pull updates and sync
-cd $env:USERPROFILE\git\claude-shared-settings
-git pull
-Copy-Item -Path ".\commands" -Destination "$env:USERPROFILE\.claude\commands\iadev" -Recurse -Force
-Copy-Item -Path ".\skills" -Destination "$env:USERPROFILE\.claude\skills" -Recurse -Force
-Write-Host "✅ Updates synced!" -ForegroundColor Green
-```
+**Restart Claude Code** after running this command.
 
 [⬆ Back to Top](#claude-shared-settings---complete-setup-guide)
 
