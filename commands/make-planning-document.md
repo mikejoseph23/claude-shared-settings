@@ -36,6 +36,18 @@ e) **Work Organization** (optional enhancement): Analyze whether the work should
   
   Choose the organization method that makes the most sense for the content and break apart complex items into smaller, trackable tasks within the chosen structure.
 
+f) **Progress Log / Notes**: Add a dedicated section at the end of the document titled "Progress Log / Notes" that includes:
+
+- A reverse-chronological log (newest entries first) for tracking execution timeline and progress
+- Each entry should include:
+  - Date/timestamp
+  - Description of work completed, decisions made, or issues encountered
+  - Any blockers, pivots, or changes to the original plan
+  - Links to related checkboxes or sections of the document that were affected
+- This section captures the nuance and reality of execution that doesn't fit into simple checkbox tracking
+- Use a consistent format like: `**YYYY-MM-DD HH:MM** - [Entry description]` or similar
+- Include a "Return to Top" link at the end of this section
+
 **Additional Instructions:** If any additional instructions or preferences are provided in the arguments, incorporate them into the planning document structure.
 
 **Output Format:** Maintain markdown formatting throughout and ensure the document is clean, professional, and easy to navigate.
