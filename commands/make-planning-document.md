@@ -21,6 +21,9 @@ c) **Section Organization**: Create or reorganize content into milestones with:
 - Clear section headers (use existing headers from the document if present, or create logical sections based on content)
 - Brief placeholder/descriptive text for each section if content is minimal
 - A "Return to Top" link at the end of each major section
+- **Model Recommendation**: For each milestone, include a recommended model to use:
+  - **Sonnet**: For straightforward implementation tasks, routine coding, documentation, and well-defined work
+  - **Opus**: For complex architectural decisions, nuanced problem-solving, tasks requiring deeper reasoning, or work that benefits from extended thinking
 
 d) **Actionable Item Tracking**: Add checkboxes `- [ ]` next to every actionable item throughout the document to enable progress tracking. Ensure items are specific and measurable.
 
