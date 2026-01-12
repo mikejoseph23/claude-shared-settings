@@ -22,12 +22,28 @@ c) **Section Organization**: Create or reorganize content into milestones with:
 - Brief placeholder/descriptive text for each section if content is minimal
 - A "Return to Top" link at the end of each major section
 - **Model Recommendation**: For each milestone, include a recommended model to use:
-  - **Sonnet**: For straightforward implementation tasks, routine coding, documentation, and well-defined work
-  - **Opus**: For complex architectural decisions, nuanced problem-solving, tasks requiring deeper reasoning, or work that benefits from extended thinking
+  - **Sonnet**: For straightforward implementation tasks, routine coding, documentation, well-defined work, and tasks with clear specifications
+  - **Opus**: For complex architectural decisions, nuanced problem-solving, tasks requiring deeper reasoning, ambiguous requirements, or work that benefits from extended thinking
 
 d) **Actionable Item Tracking**: Add checkboxes `- [ ]` next to every actionable item throughout the document to enable progress tracking. Ensure items are specific and measurable.
 
-e) **Work Organization** (optional enhancement): Analyze whether the work should be organized by:
+e) **Parallel Development Batches**: Analyze the milestones and tasks to identify opportunities for parallel execution:
+
+- Group tasks that can be worked on simultaneously by multiple agents into **Parallel Batches**
+- For each batch, indicate:
+  - **Batch ID** (e.g., Batch A, Batch B, or P1, P2)
+  - **Tasks included** in the batch that have no dependencies on each other
+  - **Prerequisites**: Any tasks or batches that must complete before this batch can start
+- Use a table format within each milestone section:
+
+  | Task             | Model       | Batch | Prerequisites  |
+  |------------------|-------------|-------|----------------|
+  | Task description | Sonnet/Opus | A     | None / Batch X |
+
+- Include a **Dependency Diagram** or simple text-based visualization if the project has complex interdependencies
+- Flag tasks that are **sequential blockers** (must complete before others can proceed) vs **parallel-ready** (can run concurrently)
+
+f) **Work Organization** (optional enhancement): Analyze whether the work should be organized by:
 
 - Functional category (e.g., Backend, Frontend, DevOps, Design)
 
@@ -39,7 +55,7 @@ e) **Work Organization** (optional enhancement): Analyze whether the work should
   
   Choose the organization method that makes the most sense for the content and break apart complex items into smaller, trackable tasks within the chosen structure.
 
-f) **Progress Log / Notes**: Add a dedicated section at the end of the document titled "Progress Log / Notes" that includes:
+g) **Progress Log / Notes**: Add a dedicated section at the end of the document titled "Progress Log / Notes" that includes:
 
 - A reverse-chronological log (newest entries first) for tracking execution timeline and progress
 - Each entry should include:
