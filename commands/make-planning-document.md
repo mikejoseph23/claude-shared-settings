@@ -36,10 +36,14 @@ e) **Parallel Development Batches**: Analyze the milestones and tasks to identif
   - **Prerequisites**: Any tasks or batches that must complete before this batch can start
 - Use a table format within each milestone section:
 
-  | Task             | Model       | Batch | Prerequisites  |
-  |------------------|-------------|-------|----------------|
-  | Task description | Sonnet/Opus | A     | None / Batch X |
+  | Task             | Role              | Batch | Prerequisites  |
+  |------------------|-------------------|-------|----------------|
+  | Task description | Sonnet/Opus/Human | A     | None / Batch X |
 
+- **Role Assignment Guidelines**:
+  - **Sonnet**: Straightforward implementation, routine coding, documentation, well-defined tasks
+  - **Opus**: Complex architecture, nuanced decisions, ambiguous requirements, extended reasoning
+  - **Human**: Tasks requiring external access, approval decisions, creative direction, domain expertise, or actions outside the AI's capabilities (e.g., deployments, purchases, stakeholder meetings)
 - Include a **Dependency Diagram** or simple text-based visualization if the project has complex interdependencies
 - Flag tasks that are **sequential blockers** (must complete before others can proceed) vs **parallel-ready** (can run concurrently)
 
