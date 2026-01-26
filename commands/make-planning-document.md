@@ -9,10 +9,18 @@ Create a planning document for the current working file in our IDE (or the file 
 
 **Document Structure Requirements:**
 
-a) ** Summary**: Create a concise summary at the top of the document that captures:
+a) **Summary**: Create a concise summary at the top of the document that captures:
 
 - The purpose/goal of the project or plan, key objectives, and critical success factors
-- Include beneath the summary to track percent complete status so that when we open the document, we have an immediate sense of how much work there is left to do.
+- Include beneath the summary a **Milestone Progress Tracker** table to show completion status at a glance:
+
+  | Milestone | Model | Status | Notes |
+  |-----------|-------|--------|-------|
+  | Milestone 1 name | Sonnet/Opus | ⬜ Not Started / 🔄 In Progress / ✅ Complete | Brief notes |
+
+  - **Model Assignment Guidelines**:
+    - **Sonnet**: Straightforward implementation, routine coding, documentation, well-defined tasks
+    - **Opus**: Complex architecture, nuanced decisions, ambiguous requirements, extended reasoning
 
 b) **Table of Contents**: Generate a linked table of contents that includes all major sections with anchor links for easy navigation
 
@@ -27,27 +35,7 @@ c) **Section Organization**: Create or reorganize content into milestones with:
 
 d) **Actionable Item Tracking**: Add checkboxes `- [ ]` next to every actionable item throughout the document to enable progress tracking. Ensure items are specific and measurable.
 
-e) **Parallel Development Batches**: Analyze the milestones and tasks to identify opportunities for parallel execution:
-
-- Group tasks that can be worked on simultaneously by multiple agents into **Parallel Batches**
-- For each batch, indicate:
-  - **Batch ID** (e.g., Batch A, Batch B, or P1, P2)
-  - **Tasks included** in the batch that have no dependencies on each other
-  - **Prerequisites**: Any tasks or batches that must complete before this batch can start
-- Use a table format within each milestone section:
-
-  | Task             | Role              | Batch | Prerequisites  |
-  |------------------|-------------------|-------|----------------|
-  | Task description | Sonnet/Opus/Human | A     | None / Batch X |
-
-- **Role Assignment Guidelines**:
-  - **Sonnet**: Straightforward implementation, routine coding, documentation, well-defined tasks
-  - **Opus**: Complex architecture, nuanced decisions, ambiguous requirements, extended reasoning
-  - **Human**: Tasks requiring external access, approval decisions, creative direction, domain expertise, or actions outside the AI's capabilities (e.g., deployments, purchases, stakeholder meetings)
-- Include a **Dependency Diagram** or simple text-based visualization if the project has complex interdependencies
-- Flag tasks that are **sequential blockers** (must complete before others can proceed) vs **parallel-ready** (can run concurrently)
-
-f) **Work Organization** (optional enhancement): Analyze whether the work should be organized by:
+e) **Work Organization** (optional enhancement): Analyze whether the work should be organized by:
 
 - Functional category (e.g., Backend, Frontend, DevOps, Design)
 
@@ -59,7 +47,7 @@ f) **Work Organization** (optional enhancement): Analyze whether the work should
   
   Choose the organization method that makes the most sense for the content and break apart complex items into smaller, trackable tasks within the chosen structure.
 
-g) **Progress Log / Notes**: Add a dedicated section at the end of the document titled "Progress Log / Notes" that includes:
+f) **Progress Log / Notes**: Add a dedicated section at the end of the document titled "Progress Log / Notes" that includes:
 
 - A reverse-chronological log (newest entries first) for tracking execution timeline and progress
 - Each entry should include:
@@ -70,6 +58,13 @@ g) **Progress Log / Notes**: Add a dedicated section at the end of the document 
 - This section captures the nuance and reality of execution that doesn't fit into simple checkbox tracking
 - Use a consistent format like: `**YYYY-MM-DD HH:MM** - [Entry description]` or similar
 - Include a "Return to Top" link at the end of this section
+
+g) **Parallel Development Recommendations** (optional): At the end of the document, include a section that analyzes which milestones can be worked on in parallel:
+
+- Identify milestones that have no dependencies on each other and could be developed simultaneously by multiple agents
+- Group these into **Parallel Groups** (e.g., Group A, Group B)
+- Note any milestones that are **sequential blockers** and must complete before others can begin
+- This section helps coordinate work when multiple agents or team members are available
 
 **Additional Instructions:** If any additional instructions or preferences are provided in the arguments, incorporate them into the planning document structure.
 
