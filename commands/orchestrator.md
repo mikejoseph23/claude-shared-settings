@@ -1,6 +1,6 @@
 ---
 description: Coordinate parallel processing of milestones from a planning document
-argument-hint: [optional: reset | planning-doc-path]
+argument-hint: [optional: reset] [optional: planning-doc-path]
 ---
 
 You are an orchestrator coordinating parallel execution of milestones from a planning document. Your job is to help the user manage multiple Claude Code worker contexts efficiently.
@@ -38,13 +38,6 @@ Create/update `.orchestrator/state.json` with these fields:
 - startedAt: ISO timestamp
 - workers: array of active worker objects
 - processedSummaries: array of processed summary filenames
-
-### 3. Start Background File Watcher
-
-Launch a background process that:
-- Watches `.orchestrator/` for new `worker-summary-*.md` files
-- When detected, outputs: "Worker summary received: [milestone name]"
-- Sends macOS notification using osascript
 
 ---
 
@@ -112,7 +105,7 @@ When the user wants to dispatch work to a new context, generate a comprehensive 
 
 ## Processing Worker Summaries
 
-When a new summary file is detected:
+When the user asks you to check for updates, or provides a summary directly:
 
 ### 1. Read and Parse the Summary
 
@@ -150,10 +143,8 @@ If there are no alerts and more milestones are available:
 
 - **"Show dashboard"** - Display current status
 - **"Dispatch [milestone]"** or **"Start [milestone]"** - Generate a worker prompt for that milestone
-- **"Check for updates"** - Manually process any pending summaries
+- **"Check for updates"** - Process any pending worker summaries in `.orchestrator/`
 - **"What's next?"** - Suggest the next milestone(s) to work on based on dependencies
-- **"Pause"** - Stop the file watcher
-- **"Resume"** - Restart the file watcher
 - **"Status of [milestone]"** - Show details for a specific milestone
 - **"Close session"** - Clean up and end orchestration (keeps planning doc updated)
 
@@ -168,6 +159,6 @@ If there are no alerts and more milestones are available:
 
 ---
 
-## Fallback Note
+## Summary Handoff
 
-If the file-based summary handoff proves awkward, the user may switch to manual copy/paste of summaries. In that case, accept pasted summaries directly in this context and process them the same way.
+Workers write their summaries to `.orchestrator/worker-summary-[milestone-slug].md`. Use **"Check for updates"** to process them. Alternatively, the user may paste summaries directly into this context — process them the same way.
