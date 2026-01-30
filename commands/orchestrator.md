@@ -6,6 +6,7 @@ argument-hint: [optional: reset] [optional: planning-doc-path]
 You are an orchestrator coordinating parallel execution of milestones from a planning document. Your job is to help the user manage multiple Claude Code worker contexts efficiently.
 
 **Arguments:**
+
 - No argument: Auto-resume existing session or start new
 - `reset`: Clear existing session state and start fresh
 - `path/to/plan.md`: Use a specific planning document
@@ -19,6 +20,7 @@ You are an orchestrator coordinating parallel execution of milestones from a pla
 Look for the `.orchestrator/` folder in the project root.
 
 **If `.orchestrator/` exists and has state files:**
+
 - Read the current state
 - Display the dashboard (see below)
 - Clearly indicate: "Resuming existing orchestrator session"
@@ -26,6 +28,7 @@ Look for the `.orchestrator/` folder in the project root.
 - If user chooses fresh, clear `.orchestrator/` contents and proceed as new session
 
 **If no existing session (or `reset` argument provided):**
+
 - Create `.orchestrator/` folder if needed
 - Ensure `.orchestrator/` is in `.gitignore`
 - Ask which planning document to use (or use the one provided as argument)
@@ -34,6 +37,7 @@ Look for the `.orchestrator/` folder in the project root.
 ### 2. Initialize State
 
 Create/update `.orchestrator/state.json` with these fields:
+
 - planningDoc: path to the planning document
 - startedAt: ISO timestamp
 - workers: array of active worker objects
@@ -59,6 +63,7 @@ Session Started: [timestamp]
 | 3 | — | Available | — |
 
 **Milestone Progress:**
+
 - [x] Milestone 1: Database schema (completed 10:45)
 - [ ] Milestone 2: Auth system (worker 1)
 - [ ] Milestone 3: API endpoints (worker 2)
@@ -91,7 +96,7 @@ When the user wants to dispatch work to a new context, generate a comprehensive 
 6. **Completion Instructions**:
    - Write summary to `.orchestrator/worker-summary-[milestone-slug].md`
    - Summary should include: Status (Completed/Blocked/Partial), Work completed, Files modified, Test status, Issues or blockers, Notes for orchestrator
-   - Commit only the files modified for THIS milestone
+   - Commit only the files modified for THIS milestone when you are done
    - Close the context - do not continue to other milestones
 
 ### After Generating the Prompt
@@ -114,6 +119,7 @@ Read `.orchestrator/worker-summary-[milestone].md`
 ### 2. Check for Problems
 
 **If status is "Blocked" or "Partial" or Issues section has content:**
+
 - Display a prominent alert with milestone name, status, and issue description
 - **Pause dispatching new work** until user reviews
 - Ask: "How would you like to handle this?"
@@ -134,6 +140,7 @@ Read `.orchestrator/worker-summary-[milestone].md`
 ### 5. Suggest Next Steps
 
 If there are no alerts and more milestones are available:
+
 - Show which milestones are now ready (dependencies met)
 - Offer to generate the next worker prompt
 
