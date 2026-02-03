@@ -124,7 +124,15 @@ When the user wants to dispatch work to a new context, generate a comprehensive 
 **If promptMode is "file":**
 
 - Save the prompt to `.orchestrator/prompts/worker-prompt-[milestone-slug].md`
-- Tell the user: "Prompt saved to `.orchestrator/prompts/worker-prompt-[milestone-slug].md` — open it and copy to a new Claude Code context."
+- Display a short paste-ready prompt for the user, formatted as a code block:
+
+```text
+Read and follow the instructions in .orchestrator/prompts/worker-prompt-[milestone-slug].md
+
+Use [Sonnet/Opus] for this task.
+```
+
+- Tell the user: "Paste the above into a new Claude Code window to start Worker [N]."
 
 ---
 
