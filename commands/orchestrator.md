@@ -21,9 +21,10 @@ Look for the `.orchestrator/` folder in the project root.
 
 **If `.orchestrator/` exists and has state files:**
 
-- Read the current state
+- Read the current state (including promptMode preference)
 - Display the dashboard (see below)
 - Clearly indicate: "Resuming existing orchestrator session"
+- Show current prompt mode: "Prompt mode: [inline/file]"
 - Ask: "Would you like to resume this session or start fresh?"
 - If user chooses fresh, clear `.orchestrator/` contents and proceed as new session
 
@@ -34,11 +35,21 @@ Look for the `.orchestrator/` folder in the project root.
 - Ask which planning document to use (or use the one provided as argument)
 - Initialize fresh session state
 
-### 2. Initialize State
+### 2. Ask About Prompt Mode
+
+Ask the user: "How would you like worker prompts delivered?"
+
+- **Inline (copy/paste)**: Prompts are displayed in this context for you to manually copy into new Claude Code windows
+- **File-based**: Prompts are saved to `.orchestrator/prompts/` as markdown files that you can open and copy from
+
+Default to inline if user has no preference.
+
+### 3. Initialize State
 
 Create/update `.orchestrator/state.json` with these fields:
 
 - planningDoc: path to the planning document
+- promptMode: "inline" or "file" (how worker prompts are delivered)
 - startedAt: ISO timestamp
 - workers: array of active worker objects
 - processedSummaries: array of processed summary filenames
@@ -104,7 +115,16 @@ When the user wants to dispatch work to a new context, generate a comprehensive 
 - Update the planning document to mark the milestone as "In Progress"
 - Update `.orchestrator/state.json` to record the active worker
 - Update the dashboard display
+
+**If promptMode is "inline":**
+
+- Display the full prompt in this context
 - Tell the user: "Prompt generated. Copy it to a new Claude Code context."
+
+**If promptMode is "file":**
+
+- Save the prompt to `.orchestrator/prompts/worker-prompt-[milestone-slug].md`
+- Tell the user: "Prompt saved to `.orchestrator/prompts/worker-prompt-[milestone-slug].md` — open it and copy to a new Claude Code context."
 
 ---
 
@@ -153,6 +173,7 @@ If there are no alerts and more milestones are available:
 - **"Check for updates"** - Process any pending worker summaries in `.orchestrator/`
 - **"What's next?"** - Suggest the next milestone(s) to work on based on dependencies
 - **"Status of [milestone]"** - Show details for a specific milestone
+- **"Switch to inline/file prompts"** - Change prompt delivery mode mid-session
 - **"Close session"** - Clean up and end orchestration (keeps planning doc updated)
 
 ---
