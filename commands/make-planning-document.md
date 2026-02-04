@@ -7,6 +7,8 @@ Create a planning document for the current working file in our IDE (or the file 
 
 **Target File:** $ARGUMENTS (if no file specified, use the current working directory context or prompt for clarification)
 
+**Before Creating the Document:** Ask the user if they want to use Haiku for simpler milestones. This saves significantly on usage limits for team members on cheaper plans. Max plan subscribers may decline, but others benefit from assigning Haiku to mechanical/boilerplate tasks.
+
 **Document Structure Requirements:**
 
 a) **Summary**: Create a concise summary at the top of the document that captures:
@@ -16,10 +18,11 @@ a) **Summary**: Create a concise summary at the top of the document that capture
 
   | Milestone | Model | Status | Notes |
   |-----------|-------|--------|-------|
-  | Milestone 1 name | Sonnet/Opus | ⬜ Not Started / 🔄 In Progress / ✅ Complete | Brief notes |
+  | Milestone 1 name | Haiku/Sonnet/Opus | ⬜ Not Started / 🔄 In Progress / ✅ Complete | Brief notes |
 
   - **Model Assignment Guidelines**:
-    - **Sonnet**: Straightforward implementation, routine coding, documentation, well-defined tasks
+    - **Haiku**: Mechanical/boilerplate work, simple CRUD, straightforward UI components, basic tests (ask user if they want to use Haiku - beneficial for those with usage limits)
+    - **Sonnet**: Most feature work, moderate complexity, standard implementations, well-defined tasks
     - **Opus**: Complex architecture, nuanced decisions, ambiguous requirements, extended reasoning
 
 b) **Table of Contents**: Generate a linked table of contents that includes all major sections with anchor links for easy navigation
@@ -30,7 +33,8 @@ c) **Section Organization**: Create or reorganize content into milestones with:
 - Brief placeholder/descriptive text for each section if content is minimal
 - A "Return to Top" link at the end of each major section
 - **Model Recommendation**: For each milestone, include a recommended model to use:
-  - **Sonnet**: For straightforward implementation tasks, routine coding, documentation, well-defined work, and tasks with clear specifications
+  - **Haiku**: For mechanical/boilerplate work, simple CRUD operations, straightforward UI components, and basic tests
+  - **Sonnet**: For most feature work, moderate complexity, standard implementations, and well-defined tasks
   - **Opus**: For complex architectural decisions, nuanced problem-solving, tasks requiring deeper reasoning, ambiguous requirements, or work that benefits from extended thinking
 
 d) **Actionable Item Tracking**: Add checkboxes `- [ ]` next to every actionable item throughout the document to enable progress tracking. Ensure items are specific and measurable.
