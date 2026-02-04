@@ -95,19 +95,22 @@ When the user wants to dispatch work to a new context, generate a comprehensive 
 
 2. **Mission Statement**: Explain they are a worker context handling a specific milestone. They should complete the work, write a summary, and close the context.
 
-3. **Planning Document Reference**: Path to the planning doc for context
+3. **Planning Document Reference**: Path to the planning doc for READ-ONLY context. Include this warning:
+   > **IMPORTANT: Do NOT edit the planning document.** The orchestrator is the only context that updates the planning doc. You may READ it for reference, but never modify it.
 
 4. **Milestone Details**: Copy the relevant milestone section from the planning document including:
    - Tasks to complete (with checkboxes)
    - Relevant file paths with brief descriptions
    - Model recommendation (Sonnet/Opus) from planning doc
+   - **IMPORTANT**: Emphasize that ALL listed tasks must be completed. Do not skip items because they seem lower priority or slightly out of scope. If an item seems problematic, note it in the summary but still attempt the work.
 
 5. **Parallel Work Awareness**: List other active contexts and what directories they're working in. Instruct worker to avoid those areas and note any conflicts.
 
-6. **Completion Instructions**:
-   - Write summary to `.orchestrator/worker-summary-[milestone-slug].md`
-   - Summary should include: Status (Completed/Blocked/Partial), Work completed, Files modified, Test status, Issues or blockers, Notes for orchestrator
-   - Commit only the files modified for THIS milestone when you are done
+6. **Completion Instructions** (in this exact order):
+   - **FIRST: Commit your code changes** - Commit all files modified for this milestone BEFORE writing the summary
+   - **SECOND: Write summary** to `.orchestrator/worker-summary-[milestone-slug].md` with: Status (Completed/Blocked/Partial), Work completed, Files modified, Test status, Issues or blockers, Notes for orchestrator, **Start time and end time** (for duration tracking)
+   - **DO NOT edit the planning document** - the orchestrator handles all planning doc updates
+   - **LAST: Notify user** - Only after committing and writing summary, tell the user the milestone is complete and **prompt them to close/clear the context**
    - Close the context - do not continue to other milestones
 
 ### After Generating the Prompt
@@ -155,7 +158,8 @@ Read `.orchestrator/worker-summary-[milestone].md`
 ### 3. Update Planning Document
 
 - Mark the milestone as complete (or blocked) in the Milestone Progress Tracker table
-- Add entry to Progress Log section with timestamp and summary of work done
+- **Calculate and record duration**: Use the start/end times from the worker's summary to calculate duration in minutes and update the "Duration (min)" column
+- Add entry to Progress Log section with **full timestamp (YYYY-MM-DD HH:MM)** and summary of work done
 - **Check off completed task checkboxes**: Cross-reference the worker's summary against the milestone's task list and change `- [ ]` to `- [x]` for each completed item. Leave uncompleted items unchecked for visibility into what remains.
 
 ### 4. Clean Up
@@ -192,6 +196,57 @@ If there are no alerts and more milestones are available:
 - **Keep the planning document as source of truth.** All status updates should be reflected there.
 - **One milestone per worker context.** Workers should not take on additional work.
 - **Workers commit only their files.** Emphasize this in every worker prompt.
+- **ONLY THE ORCHESTRATOR EDITS THE PLANNING DOCUMENT.** Workers must NEVER modify the planning document. Workers only write their summary file. The orchestrator is solely responsible for updating milestone status, checking off tasks, and adding progress log entries.
+- **Workers must complete ALL tasks.** Emphasize in every worker prompt that workers should NOT skip items because they seem lower priority or out of scope. If an item is listed, it must be completed. Workers should note concerns in their summary but still attempt the work.
+
+---
+
+## Gap-Filling Prompts
+
+When a worker's summary shows incomplete work (items skipped or marked as out of scope), generate a gap-filling prompt:
+
+### Gap-Filling Prompt Structure
+
+Follow the same structure as regular worker prompts, with these additions:
+
+1. **Header**: "Worker Context: [Milestone Name] - Gap Fill"
+
+2. **Mission Statement**: Explain this is a follow-up to complete work that was missed or skipped in the original milestone attempt.
+
+3. **Context from Original Work**:
+   - Reference the original milestone's summary (what was completed)
+   - List files that were already modified
+   - Note any relevant decisions or patterns established
+
+4. **Remaining Tasks**: List ONLY the uncompleted items from the original milestone. Copy them with their original checkbox format.
+
+5. **Parallel Work Awareness**: Same as regular prompts—list other active contexts and directories to avoid.
+
+6. **Completion Instructions** (same as regular prompts):
+   - **FIRST: Commit your code changes** before writing the summary
+   - **SECOND: Write summary** to `.orchestrator/worker-summary-[milestone-slug]-gap.md`
+   - **DO NOT edit the planning document**
+   - **LAST: Notify user** and prompt them to close/clear the context after completion
+
+---
+
+## Context Management
+
+When coordinating many parallel workers, monitor your context usage:
+
+### Signs of Context Filling Up
+
+- Responses becoming slower or truncated
+- Difficulty recalling earlier parts of the conversation
+- Approaching many dispatched workers in a single session
+
+### When Context is Getting Full
+
+1. **Proactively alert the user**: "My context is getting full. While waiting for workers to complete, you may want to run `/compact` to free up space."
+
+2. **Save state first**: Ensure `.orchestrator/state.json` is current before suggesting compaction.
+
+3. **After compacting**: The user can resume by running the orchestrator command again—it will read the saved state and continue coordination.
 
 ---
 
