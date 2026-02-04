@@ -154,9 +154,9 @@ Read `.orchestrator/worker-summary-[milestone].md`
 
 ### 3. Update Planning Document
 
-- Mark the milestone as complete (or blocked)
-- Add entry to Progress Log section with timestamp and summary
-- Update any checkbox items that were completed
+- Mark the milestone as complete (or blocked) in the Milestone Progress Tracker table
+- Add entry to Progress Log section with timestamp and summary of work done
+- **Check off completed task checkboxes**: Cross-reference the worker's summary against the milestone's task list and change `- [ ]` to `- [x]` for each completed item. Leave uncompleted items unchecked for visibility into what remains.
 
 ### 4. Clean Up
 
