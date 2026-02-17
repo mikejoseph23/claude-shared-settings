@@ -11,6 +11,7 @@ This repository contains custom slash commands and skills for Claude Code that c
   - [/iadev:make-planning-document](#iadevmake-planning-document)
   - [/iadev:planning-interview](#iadevplanning-interview)
   - [/iadev:market-research](#iadevmarket-research)
+  - [/iadev:timer-summary](#iadevtimer-summary)
   - [/iadev:update-scratchpad](#iadevupdate-scratchpad)
 - [Skills Available](#skills-available)
   - [Requirements Interviewer](#requirements-interviewer)
@@ -37,6 +38,7 @@ claude-shared-settings/
 │   ├── make-planning-document.md
 │   ├── planning-interview.md
 │   ├── market-research.md
+│   ├── timer-summary.md
 │   └── update-scratchpad.md
 ├── skills/                      # Skills (automatic activation)
 │   └── requirements-interviewer/
@@ -143,6 +145,31 @@ The command will guide you through defining research objectives, conducting anal
 - Supporting research documents in working folder
 - Issues/discrepancies flagged appropriately
 - Clean hierarchical linking (main findings → supporting docs → nested details)
+
+---
+
+### `/iadev:timer-summary`
+
+Generates a short, non-technical summary of work accomplished for time tracker entries.
+
+**Features:**
+
+- Defaults to summarizing the current conversation context
+- Optionally accepts a date range to summarize git commits instead
+- Output is 2-4 sentences written for a non-technical manager audience
+
+**Usage:**
+
+```bash
+# Summarize current session
+/iadev:timer-summary
+
+# Summarize today's git commits
+/iadev:timer-summary today
+
+# Summarize a date range
+/iadev:timer-summary 2026-02-10 to 2026-02-17
+```
 
 ---
 
