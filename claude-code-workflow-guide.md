@@ -9,7 +9,7 @@ A structured process for planning, developing, and testing features with Claude 
 2. State objective         → Describe what you want to build
 3. /iadev:planning-interview    → Answer questions to gather requirements
 4. /iadev:make-planning-document → Convert interview into structured plan
-5. Develop with agent teams → Use agent teams to work milestones in parallel
+5. /iadev:orchestrator          → Coordinate parallel development
 6. Unit tests              → Written during development milestones
 7. Manual testing          → Validate complete user experience
 8. E2E tests (optional)    → Playwright tests for regression protection
@@ -55,18 +55,24 @@ Thorough planning here saves time later.
 /iadev:make-planning-document
 ```
 
-Converts the interview output into a structured document with milestones and tasks.
+Converts the interview output into a structured document with milestones and tasks that the orchestrator can execute.
 
-### Step 5: Develop with Agent Teams
+### Step 5: Coordinate Parallel Development
 
-Use Claude Code's built-in agent teams to work through milestones in parallel. The team lead reads the planning document, spawns teammates for each milestone, and coordinates their work automatically — no manual copy-paste between contexts needed.
+```
+/iadev:orchestrator
+```
+
+The orchestrator reads the planning document, identifies dependencies, and coordinates parallel Claude Code instances. It handles parallelization automatically - you don't need to manage it.
 
 ### Step 6: Development with Unit Tests
 
-As teammates work through milestones:
+As the orchestrator works through milestones:
 - Unit tests are developed alongside code
 - Development follows patterns in `CLAUDE.md`
-- Each teammate works independently on assigned tasks
+- Each instance works independently on assigned tasks
+
+Let the orchestrator complete all milestones before moving on.
 
 ### Step 7: Manual Testing
 
@@ -102,7 +108,13 @@ If requirements change mid-development:
 
 Don't restart from scratch.
 
-## Model Selection
+## Context Efficiency and Model Selection
+
+### Why This Workflow is Efficient
+
+Worker contexts spawned by the orchestrator rarely hit context window limits. Well-scoped milestones mean each worker completes its unit of work with context to spare. This makes the workflow both fast and cost-effective.
+
+### Model Selection
 
 The `make-planning-document` command determines which model to use for each milestone. Using less capable models for simpler work saves on usage limits - valuable for team members on cheaper plans.
 
@@ -116,7 +128,7 @@ When creating the planning document, you'll be asked if you want to use Haiku fo
 
 ## Key Principle: CLAUDE.md
 
-Throughout the workflow, `CLAUDE.md` guides all decisions: code patterns, database naming, error handling, DateTime usage, and more. All Claude instances follow these rules automatically.
+Throughout the workflow, `CLAUDE.md` guides all decisions: code patterns, database naming, error handling, DateTime usage, and more. The orchestrator and all Claude instances follow these rules automatically.
 
 ## Command Reference
 
@@ -124,4 +136,5 @@ Throughout the workflow, `CLAUDE.md` guides all decisions: code patterns, databa
 |---------|---------|
 | `/iadev:planning-interview` | Interactive requirements gathering |
 | `/iadev:make-planning-document` | Create structured planning document |
+| `/iadev:orchestrator` | Coordinate parallel development |
 | `/iadev:archive-planning-document` | Archive completed plan to docs/ |

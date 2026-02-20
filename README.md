@@ -9,6 +9,7 @@ This repository contains custom slash commands and skills for Claude Code that c
 - [Repository Structure](#repository-structure)
 - [Commands Available](#commands-available)
   - [/iadev:make-planning-document](#iadevmake-planning-document)
+  - [/iadev:orchestrator](#iadevorchestrator)
   - [/iadev:planning-interview](#iadevplanning-interview)
   - [/iadev:market-research](#iadevmarket-research)
   - [/iadev:timer-summary](#iadevtimer-summary)
@@ -36,6 +37,7 @@ claude-shared-settings/
 ├── scratchpad.md                # Current work in progress
 ├── commands/                    # Slash commands (manual invocation)
 │   ├── make-planning-document.md
+│   ├── orchestrator.md
 │   ├── planning-interview.md
 │   ├── market-research.md
 │   ├── timer-summary.md
@@ -95,6 +97,41 @@ To make the planning document in the root folder with additional instructions:
 ```bash
 /iadev:make-planning-document roadmap.md organize by timeline phases
 ```
+
+---
+
+### `/iadev:orchestrator`
+
+Coordinates parallel execution of milestones from a planning document across multiple Claude Code contexts, with per-milestone model assignment.
+
+**Features:**
+
+- Reads planning documents and dispatches milestones to separate worker contexts
+- Assigns different models (Haiku/Sonnet/Opus) per milestone for cost-efficient execution
+- Tracks worker progress via dashboard with status, duration, and alerts
+- Processes worker summaries and updates the planning document automatically
+- Supports inline (copy/paste) or file-based prompt delivery
+- Handles gap-filling for incomplete milestones
+- Manages context limits with save/resume via `.orchestrator/state.json`
+
+**Usage:**
+
+```bash
+# Start or resume orchestration
+/iadev:orchestrator
+
+# Start fresh (clear previous session)
+/iadev:orchestrator reset
+
+# Use a specific planning document
+/iadev:orchestrator docs/project-plan.md
+```
+
+**Key Commands During a Session:**
+- "Show dashboard" — View current status
+- "Dispatch [milestone]" — Generate a worker prompt
+- "Check for updates" — Process pending worker summaries
+- "What's next?" — Get suggestions based on dependencies
 
 ---
 
