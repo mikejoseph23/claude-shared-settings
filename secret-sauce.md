@@ -4,22 +4,7 @@
 
 A repeatable process for turning a vague idea into a finished outcome using Claude Code with parallel agent waves. Works for any complex problem that benefits from structured decomposition and parallel execution.
 
-## Prerequisites
-
-Set up the custom commands used in this recipe. See [setup.md](setup.md) for installation instructions.
-
-### Commands Used in This Recipe
-
-| Command | Phase | What It Does |
-|---------|-------|-------------|
-| `/planning-interview` | Phase 2 | Interviews you one question at a time. Asks focused questions, builds on your answers, then automatically probes edge cases until gaps become improbable. |
-| `/make-planning-document` | Phase 3 | Transforms interview output into a structured planning document with milestone tracker, checkboxes, dependency analysis, model recommendations, and parallel execution groups. |
-| `/orchestrator` | Phase 5 | Coordinates parallel processing of milestones from a planning document. |
-| `/archive-planning-document` | Phase 6 | Archives a completed planning document to the docs folder. |
-
-### Why Custom Commands Matter
-
-Without them, you'd spend the first 15 minutes of every project re-explaining your preferred planning format, interview style, and coordination strategy. Custom commands encode that institutional knowledge once and replay it perfectly every time. Each command is tuned through real usage — refinements accumulate, and every project benefits from lessons learned in previous ones.
+No special setup required. Each phase describes exactly what to do with plain conversation. If you later want to go faster, optional custom commands can automate each phase.
 
 ---
 
@@ -59,25 +44,39 @@ where the market is heading. Deliverable is a summary doc I can
 share with my team.
 ```
 
-The seed can be anything — a product idea, a migration plan, a research question, an infrastructure overhaul. Casual and conversational works best. The planning interview turns it into structured requirements, and the planning document breaks it into parallelizable milestones.
+The seed can be anything — a product idea, a migration plan, a research question, an infrastructure overhaul. Casual and conversational works best.
+
+---
 
 ### Phase 2: Requirements Interview
 
-**Command**: `/planning-interview`
+Have Claude interview you about your idea, one question at a time. Reference your `Idea.txt` and ask:
 
-Extracts detailed requirements from your idea. One question at a time, building on previous answers. This surfaces decisions you haven't thought about yet — scope boundaries, constraints, dependencies, success criteria, and edge cases.
+> *"Interview me about this idea. Ask one question at a time, wait for my answer, then ask the next. Cover scope, constraints, users, edge cases, and success criteria."*
 
-**Tip**: Answer honestly when you don't know. "Whatever makes sense" is a valid answer — the AI will make reasonable defaults and you can course-correct later.
+Answer honestly when you don't know. "Whatever makes sense" is a valid answer — Claude will make reasonable defaults and you can course-correct later.
 
-The command has a built-in **exhaust-the-gaps phase** that automatically kicks in after the main interview. It transitions into rapid-fire, short-form Q&A probing edge cases and assumptions until they become improbable. Every gap closed here is a decision an agent won't have to guess at later.
+After the initial questions (typically 5-10), push for completeness:
+
+> *"Are there any other questions that could help fill gaps in your understanding or surface edge cases? Keep interviewing me in short conversational form until the gaps become narrow and improbable."*
+
+This triggers a rapid-fire second pass — short questions, short answers — that digs into assumptions you didn't know you were making. When the questions start feeling unlikely or trivial, you've reached diminishing returns and it's time to move on.
+
+Every gap closed here is a decision an agent won't have to guess at later.
+
+> **Shortcut**: The `/planning-interview` custom command does all of this automatically, including the exhaust-the-gaps phase. See [Accelerating with Custom Commands](#accelerating-with-custom-commands).
 
 **Output**: Detailed requirements captured in conversation context
 
+---
+
 ### Phase 3: Planning Document
 
-**Command**: `/make-planning-document`
+Ask Claude to turn the interview results into a structured planning document:
 
-Generates a structured planning document with:
+> *"Create a planning document from our interview. Include: a summary with objectives, a milestone progress tracker table, milestones broken into checkboxed tasks, dependency analysis showing which milestones can run in parallel, and a model recommendation (Haiku/Sonnet/Opus) for each milestone."*
+
+The document should have:
 
 - **Summary** with key objectives and success criteria
 - **Milestone progress tracker** table (model assignment, status, duration)
@@ -87,37 +86,43 @@ Generates a structured planning document with:
 
 The critical insight: **milestones should be sized for parallelization**. Group work by independence, not by category. Two milestones that touch different outputs can run simultaneously. Two that depend on each other's results cannot.
 
+> **Shortcut**: The `/make-planning-document` custom command generates all of this with consistent formatting, parallel execution groups, and a progress log. See [Accelerating with Custom Commands](#accelerating-with-custom-commands).
+
 **Output**: `ProjectName-Planning.md` with milestones
+
+---
 
 ### Phase 4: Foundation (Sequential)
 
-Build the foundation milestones sequentially. These are the ones everything else depends on — the setup, core structure, and shared resources that all subsequent work builds on.
+Execute the foundation milestones sequentially. These are the ones everything else depends on — the setup, core structure, and shared resources that all subsequent work builds on.
 
 **Why sequential**: Every subsequent milestone references this foundation. Getting the structure right here means parallel agents can follow established patterns without conflicts.
 
-**Tip**: Establish conventions early and document them in a `CLAUDE.md` at the project root so all agents inherit them.
+**Tip**: Establish conventions early and document them in a `CLAUDE.md` at the project root so all agents inherit them. This file is the bridge between you and every parallel agent — it's how conventions propagate without you repeating them.
+
+---
 
 ### Phase 5: Parallel Waves
 
-**Command**: `/orchestrator` (or manual team coordination)
+This is where the magic happens. Group remaining milestones into waves based on their dependency chains. Independent milestones run simultaneously, dependent ones wait for their prerequisites.
 
-Group remaining milestones into waves based on their dependency chains. Independent milestones run simultaneously, dependent ones wait for their prerequisites.
+#### How to dispatch
 
-#### Dispatching: Two Approaches
+Open multiple Claude Code terminal windows (3-4 is the sweet spot). For each wave:
 
-**Approach A: Built-in agent teams**
+1. **Identify** the next set of independent milestones from your planning doc
+2. **Write a self-contained prompt** for each milestone — include everything the agent needs (file paths, patterns to follow, references, deliverables). The agent has no access to your main window's context, so the prompt IS the context.
+3. **Paste each prompt** into a separate Claude Code window
+4. **Wait** for all windows to report completion
+5. **Verify** results — check outputs, run tests if applicable, confirm consistency
+6. **Update** your planning doc (check off completed milestones)
+7. **Repeat** for the next wave
 
-Uses Claude Code's `TeamCreate` / `Task` tool to spawn in-process subagents. The orchestrator manages everything within a single context window. Pros: fully automated, no manual steps. Cons: subagents can't be individually configured for permissions or model.
+**Reusing windows with `/clear`**: After an agent finishes a milestone, run `/clear` in that window to reset the context. This keeps all permission grants (file write, bash, etc.) while freeing the full context budget for the next milestone. Over a multi-wave project, this avoids re-granting permissions dozens of times. Always prefer `/clear` over opening new windows.
 
-**Approach B: Multi-window orchestration** (recommended)
+**Model selection**: Each window can run a different model. Use Haiku for straightforward milestones and Opus for complex ones — set the model per window to match the planning doc's recommendations.
 
-The orchestrator runs in one Claude Code window and prompts the *user* to dispatch work to separate Claude Code terminal windows:
-
-1. **Permission persistence**: Tool permissions survive `/clear` but not new windows. Reusing a window with `/clear` means zero permission friction.
-2. **Model selection**: Each window can run a different model. The orchestrator specifies "use Haiku for this milestone" and "use Opus for that one."
-3. **Visibility**: Each agent's work is visible in its own terminal.
-
-**How the orchestrator prompts the user**:
+**Example orchestrator output** (what you'd prepare for yourself, or what the `/orchestrator` command generates):
 
 ```
 === Wave 2 Ready ===
@@ -133,41 +138,30 @@ Window 2 (Sonnet): Run /clear, then paste:
 Window 3 (Haiku): Run /clear, then paste:
   → [Milestone prompt...]
 
-When all windows report completion, come back here and tell me.
+When all windows report completion, verify and move to Wave 3.
 ```
 
-The orchestrator waits, then verifies results and generates the next wave.
-
-**Reusing windows with `/clear`**: After an agent finishes a milestone, `/clear` resets the context but keeps all permission grants. Over a multi-wave project, this avoids re-granting permissions dozens of times.
-
-#### For each wave:
-
-1. **Orchestrator analyzes** the planning doc for the next independent milestones
-2. **Orchestrator generates prompts** — detailed, self-contained, with all context needed
-3. **Orchestrator tells the user** which windows to `/clear` and what to paste
-4. **User dispatches** to their terminal windows
-5. **Agents work independently** and report completion
-6. **User returns to orchestrator** with results
-7. **Orchestrator verifies** results and updates planning doc
-8. **Repeat** for next wave
+> **Shortcut**: The `/orchestrator` custom command automates wave analysis, prompt generation, and verification. See [Accelerating with Custom Commands](#accelerating-with-custom-commands).
 
 #### Key principles:
 
-- **Self-contained prompts**: Each prompt must include everything the agent needs. The agent has no access to the orchestrator's context.
-- **Output ownership**: Each agent owns distinct outputs. Two agents writing to the same file or resource causes conflicts.
+- **Self-contained prompts**: Each prompt must include everything the agent needs. Don't assume shared context.
+- **Output ownership**: Each agent owns distinct outputs. Two agents writing to the same resource causes conflicts.
 - **Shared read, exclusive write**: All agents can read the foundation. Only one should write to any given output.
 - **Verify between waves**: Check results between waves. Catch issues early before the next wave builds on top.
 - **Include `CLAUDE.md` reference**: Every prompt should tell the agent to read the project's `CLAUDE.md` first.
 
-### Phase 6: Verification & Summary
+---
 
-**Command**: `/archive-planning-document` (to archive the completed plan)
+### Phase 6: Verification & Summary
 
 After all waves complete:
 
 1. Verify all outputs
 2. Update planning document (all milestones checked off)
 3. Generate summary of what was accomplished
+
+> **Shortcut**: The `/archive-planning-document` command archives the completed plan to your docs folder.
 
 ---
 
@@ -192,6 +186,23 @@ After all waves complete:
 - **Skipping the foundation**: Rushing to parallelize before patterns are established leads to inconsistent results.
 - **Not verifying between waves**: An issue in wave 3 compounds through waves 4 and 5.
 - **Over-parallelizing**: 3-4 agents per wave is the sweet spot. More increases coordination overhead without proportional speedup.
+
+---
+
+## Accelerating with Custom Commands
+
+Every phase above can be done with plain conversation. But if you find yourself repeating the same instructions across projects, custom commands encode that knowledge into reusable shortcuts.
+
+| Command | Phase | What It Automates |
+|---------|-------|-------------------|
+| `/planning-interview` | Phase 2 | Structured interview with automatic exhaust-the-gaps phase |
+| `/make-planning-document` | Phase 3 | Consistent planning doc format with milestone tracker, dependencies, and parallel groups |
+| `/orchestrator` | Phase 5 | Wave analysis, prompt generation, dispatch instructions, verification |
+| `/archive-planning-document` | Phase 6 | Archives completed plan to docs folder |
+
+Custom commands are markdown files stored in `~/.claude/commands/`. The filename becomes the slash command. For setup and sharing instructions, see [setup.md](setup.md).
+
+The compounding effect: each command is tuned through real usage. Refinements accumulate — every project benefits from lessons learned in previous ones.
 
 ---
 
