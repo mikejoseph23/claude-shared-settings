@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A repeatable process for turning a vague idea into a finished outcome using Claude Code with parallel agent waves. Works for anything — building an app, researching a topic, analyzing data, planning infrastructure, writing documentation, or solving any complex problem that benefits from structured decomposition and parallel execution.
+A repeatable process for turning a vague idea into a finished outcome using Claude Code with parallel agent waves. Works for any complex problem that benefits from structured decomposition and parallel execution.
 
 ## Prerequisites
 
@@ -31,34 +31,35 @@ Start with a raw description of what you want to accomplish. It doesn't need to 
 
 **Input**: `Idea.txt` (or whatever you have — notes, voice transcript, napkin photo, a problem statement, a half-baked plan)
 
-**Example** — a software project:
+**Examples**:
 
 ```text
 # Idea.txt
 
-I want to build a to-do list app. Not just another checkbox list though.
-
-I want it to feel like a real productivity tool. You should be able to
-organize tasks into projects, set due dates and priorities, and maybe
-have some kind of recurring task support for stuff like "take out the
-trash every Thursday."
-
-I'd love a clean minimal UI — something I'd actually want to look at
-every day. Dark mode obviously. Maybe a calendar view so I can see
-what's coming up this week.
-
-Notifications would be nice. Remind me 30 minutes before something
-is due, or nag me if I keep snoozing a task.
+I want to build a to-do list app. Not just another checkbox list
+though. Projects, due dates, priorities, recurring tasks. Clean
+minimal UI with dark mode. Maybe a calendar view. Notifications
+when something is due.
 ```
 
-But the seed can be anything:
+```text
+# Idea.txt
 
-- *"I need to migrate our monolith to microservices and I don't know where to start"*
-- *"Research the competitive landscape for AI code editors and summarize findings"*
-- *"Set up our CI/CD pipeline with staging and production environments"*
-- *"Analyze our API logs from the last 30 days and identify performance bottlenecks"*
+I need to migrate our monolith to microservices. I don't know
+where to start. We have about 15 domain areas, a shared Postgres
+database, and three teams. Downtime needs to be minimal.
+```
 
-That's it. Casual, conversational, full of "I want" and "it would be cool if." The planning interview will turn this into structured requirements, and the planning document will break it into parallelizable milestones.
+```text
+# Idea.txt
+
+Research the competitive landscape for AI-assisted development
+tools. I want to understand pricing models, feature gaps, and
+where the market is heading. Deliverable is a summary doc I can
+share with my team.
+```
+
+The seed can be anything — a product idea, a migration plan, a research question, an infrastructure overhaul. Casual and conversational works best. The planning interview turns it into structured requirements, and the planning document breaks it into parallelizable milestones.
 
 ### Phase 2: Requirements Interview
 
@@ -137,7 +138,7 @@ When all windows report completion, come back here and tell me.
 
 The orchestrator waits, then verifies results and generates the next wave.
 
-**Reusing windows with `/clear`**: After an agent finishes a milestone, `/clear` resets the context but keeps all permission grants. Over a multi-wave build, this avoids re-granting permissions dozens of times.
+**Reusing windows with `/clear`**: After an agent finishes a milestone, `/clear` resets the context but keeps all permission grants. Over a multi-wave project, this avoids re-granting permissions dozens of times.
 
 #### For each wave:
 
@@ -187,7 +188,7 @@ After all waves complete:
 ## Anti-Patterns to Avoid
 
 - **Overlapping outputs**: If two agents need to modify the same resource, make one depend on the other or consolidate into one agent's scope.
-- **Vague task descriptions**: "Handle the backend" is too broad. Specific deliverables with clear boundaries are actionable.
+- **Vague task descriptions**: "Handle section 3" is too broad. Specific deliverables with clear boundaries are actionable.
 - **Skipping the foundation**: Rushing to parallelize before patterns are established leads to inconsistent results.
 - **Not verifying between waves**: An issue in wave 3 compounds through waves 4 and 5.
 - **Over-parallelizing**: 3-4 agents per wave is the sweet spot. More increases coordination overhead without proportional speedup.
