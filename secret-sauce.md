@@ -157,11 +157,29 @@ When all windows report completion, verify and move to Wave 3.
 
 After all waves complete:
 
-1. Verify all outputs
-2. Update planning document (all milestones checked off)
-3. Generate summary of what was accomplished
+**1. Verify all outputs**
 
-> **Shortcut**: The `/archive-planning-document` command archives the completed plan to your docs folder.
+Confirm that every milestone delivered what was expected. For code projects, run the build and test suite. For research or documentation, review each deliverable against its milestone checklist.
+
+**2. Update the planning document**
+
+Go through every milestone in the planning doc and check off completed items. Update the progress tracker table — mark each milestone as complete and note any deviations or decisions made during execution.
+
+**3. Generate a summary**
+
+Ask Claude to generate a summary of everything that was accomplished — what was built/produced, key stats, architecture decisions, and anything notable from the process.
+
+**4. Archive the planning document**
+
+Once the plan is fully complete, archive it to keep the project root clean:
+
+- **Clean the document**: Remove implementation-specific code blocks while preserving the functional spec, progress logs, and milestone status. The archived version should read as a record of *what* was done and *why*, not *how*.
+- **Rename**: Drop "plan" or "planning" from the filename (e.g., `MyProject-Planning.md` → `MyProject.md`)
+- **Move to `docs/`**: Create the folder if it doesn't exist
+- **Update the docs index**: Add a link to the archived doc in `docs/README.md`. Create the README if it doesn't exist.
+- **Commit**: Stage the move, the cleaned doc, and the index update as a single commit
+
+> **Shortcut**: The `/archive-planning-document` command does all of this automatically — cleaning, renaming, moving, updating the index, and committing. See [Accelerating with Custom Commands](#accelerating-with-custom-commands).
 
 ---
 
