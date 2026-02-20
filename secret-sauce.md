@@ -46,6 +46,8 @@ share with my team.
 
 The seed can be anything — a product idea, a migration plan, a research question, an infrastructure overhaul. Casual and conversational works best.
 
+**Pro tip — stakeholder interviews**: If you have access to a stakeholder or subject matter expert, have a conversation with them and record it. Transcribe the recording and use it as your seed (or alongside your `Idea.txt`). A raw transcript captures domain knowledge, priorities, and constraints that you'd otherwise have to remember and retype. When the planning interview runs with a transcript as context, it asks sharper, more relevant questions because it already has the stakeholder's language and priorities to build on.
+
 ---
 
 ### Phase 2: Requirements Interview
