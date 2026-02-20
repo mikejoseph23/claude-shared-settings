@@ -337,6 +337,17 @@ Every phase above can be done with plain conversation. But if you find yourself 
 | `/make-planning-document` | Phase 3 | Consistent planning doc format with milestone tracker, dependencies, and parallel groups |
 | `/orchestrator` | Phase 5 | Wave analysis, prompt generation, dispatch instructions, verification |
 | `/archive-planning-document` | Phase 6 | Archives completed plan to docs folder |
+| `/autopilot` | All | End-to-end autonomous build — seed to finished project, no human in the loop |
+
+### The Nuclear Option: `/autopilot`
+
+The `/autopilot` command chains the entire process into a single autonomous run. Give it your `Idea.txt`, run it in YOLO mode on a sandboxed machine, and walk away. It self-conducts the requirements analysis (documenting every decision it makes on your behalf), generates the planning doc, builds the foundation, dispatches parallel waves, verifies between each wave, and archives everything when done.
+
+**When to use it**: When your seed file is thorough enough that you trust reasonable defaults for the gaps. Works best when the idea is well-defined or when you've already done a stakeholder interview and have a transcript as input.
+
+**When not to use it**: When the project has critical ambiguities that genuinely need human judgment — business logic decisions, third-party service selection, security architecture. The command will stub these and leave TODOs, but if the whole project hinges on them, run the interactive process instead.
+
+**Safety**: Run it on a machine you're comfortable giving full autonomy to. YOLO mode auto-approves all file writes, bash commands, and agent spawning. A sandboxed/firewalled environment means the worst case is a project you delete, not a machine you regret.
 
 Custom commands are markdown files stored in `~/.claude/commands/`. The filename becomes the slash command. The commands used in this recipe are available at [github.com/mikejoseph23/claude-shared-settings](https://github.com/mikejoseph23/claude-shared-settings/). For setup instructions, see [setup.md](setup.md).
 

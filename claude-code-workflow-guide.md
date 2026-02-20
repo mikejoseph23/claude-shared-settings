@@ -102,6 +102,13 @@ Once all waves are done:
 | `/make-planning-document` | 3 | Structured planning doc with milestones, dependencies, and parallel groups |
 | `/orchestrator` | 5 | Coordinates parallel agents — prompts, dashboards, summary processing |
 | `/archive-planning-document` | 6 | Cleans, renames, moves plan to `docs/`, updates index, commits |
+| `/autopilot` | All | Fully autonomous end-to-end build — seed to finished project |
+
+### Going Full Autopilot
+
+If your seed file is solid and you trust reasonable defaults, `/autopilot` runs the entire process unattended. Point it at your `Idea.txt`, enable YOLO mode (`claude --dangerously-skip-permissions`), and let it build while you sleep. It documents every autonomous decision in a requirements file for your review.
+
+Best on a sandboxed machine you're comfortable giving full autonomy to.
 
 For the full process with detailed manual instructions for every phase, see [The Secret Sauce](secret-sauce.md).
 
