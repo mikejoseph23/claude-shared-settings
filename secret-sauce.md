@@ -73,6 +73,35 @@ Start with a raw idea file. It doesn't need to be formal. A few paragraphs descr
 
 **Input**: `Idea.txt` (or whatever you have — notes, voice transcript, napkin photo)
 
+**Example** — the "Hello World" of this process:
+
+```text
+# Idea.txt
+
+I want to build a to-do list app. Not just another checkbox list though.
+
+I want it to feel like a real productivity tool. You should be able to
+organize tasks into projects, set due dates and priorities, and maybe
+have some kind of recurring task support for stuff like "take out the
+trash every Thursday."
+
+I'd love a clean minimal UI — something I'd actually want to look at
+every day. Dark mode obviously. Maybe a calendar view so I can see
+what's coming up this week.
+
+Eventually I'd want it on my phone too, not just the browser. And it
+would be cool if I could share a project with someone else, like a
+shared grocery list with my partner that syncs in real time.
+
+I don't want to use someone else's API — I want to own my data. So
+a backend I control, probably with a database I can back up.
+
+Notifications would be nice. Remind me 30 minutes before something
+is due, or nag me if I keep snoozing a task.
+```
+
+That's it. Casual, conversational, full of "I want" and "it would be cool if." The planning interview will turn this into structured requirements, and the planning document will break it into parallelizable milestones.
+
 ### Phase 2: Requirements Interview
 
 **Command**: `/planning-interview`
