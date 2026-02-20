@@ -56,15 +56,43 @@ Have Claude interview you about your idea, one question at a time. Reference you
 
 Answer honestly when you don't know. "Whatever makes sense" is a valid answer — Claude will make reasonable defaults and you can course-correct later.
 
-After the initial questions (typically 5-10), push for completeness:
+#### How to run the interview
+
+**Start the main interview (5-10 questions):**
+
+Claude should ask clear, focused questions that build on your previous answers. Good questions cover:
+
+- **Scope**: What's in, what's out, what's the MVP vs. future
+- **Constraints**: Timeline, budget, technical limitations, team size
+- **Users**: Who uses it, how many, what are their skill levels
+- **Edge cases**: What happens when things go wrong
+- **Success criteria**: How do you know when it's done
+
+The key rule: **one question per message, wait for the answer, then ask the next**. This forces depth over breadth — each answer shapes the next question.
+
+**Trigger the exhaust-the-gaps phase:**
+
+After the initial questions, push for completeness:
 
 > *"Are there any other questions that could help fill gaps in your understanding or surface edge cases? Keep interviewing me in short conversational form until the gaps become narrow and improbable."*
 
-This triggers a rapid-fire second pass — short questions, short answers — that digs into assumptions you didn't know you were making. When the questions start feeling unlikely or trivial, you've reached diminishing returns and it's time to move on.
+This triggers a rapid-fire second pass — short questions, short answers — that digs into assumptions you didn't know you were making. Focus areas for this phase:
 
-Every gap closed here is a decision an agent won't have to guess at later.
+- **Edge cases and error states** — What breaks? What happens when it does?
+- **Assumptions that haven't been validated** — Are you sure about that default?
+- **Boundary conditions and failure modes** — Limits, caps, timeouts
+- **Integration points between features** — Where do things connect?
+- **Permission and access edge cases** — Who can see/do what, when?
+- **Offline/disconnected scenarios** — What works without a connection?
+- **Data consistency concerns** — What if two things happen at once?
 
-> **Shortcut**: The `/planning-interview` custom command does all of this automatically, including the exhaust-the-gaps phase. See [Accelerating with Custom Commands](#accelerating-with-custom-commands).
+Questions will naturally progress from high-impact to increasingly niche. **When they start feeling unlikely or trivial, you've reached diminishing returns** and it's time to move on.
+
+#### Why this matters
+
+Every gap closed here is a decision an agent won't have to guess at later. Ambiguity in requirements becomes inconsistency in outputs — especially when multiple agents are working in parallel without shared context.
+
+> **Shortcut**: The `/planning-interview` custom command does all of this automatically — structured one-at-a-time questions, adaptive follow-ups, and the exhaust-the-gaps phase built in as a mandatory step. Worth adopting because it ensures the gap-filling phase always happens (easy to skip when doing it manually) and encodes the focus areas so you don't have to remember them. See [Accelerating with Custom Commands](#accelerating-with-custom-commands).
 
 **Output**: Detailed requirements captured in conversation context
 
@@ -76,17 +104,55 @@ Ask Claude to turn the interview results into a structured planning document:
 
 > *"Create a planning document from our interview. Include: a summary with objectives, a milestone progress tracker table, milestones broken into checkboxed tasks, dependency analysis showing which milestones can run in parallel, and a model recommendation (Haiku/Sonnet/Opus) for each milestone."*
 
-The document should have:
+#### What the document should contain
 
-- **Summary** with key objectives and success criteria
-- **Milestone progress tracker** table (model assignment, status, duration)
-- **Milestones** broken into specific, checkboxed task items
-- **Dependency analysis** identifying which milestones can run in parallel
-- **Model recommendations** per milestone (Haiku for straightforward work, Sonnet for standard tasks, Opus for complex reasoning)
+**a) Summary**: A concise overview at the top with the purpose, key objectives, and success criteria. Below it, include a **Milestone Progress Tracker** table:
 
-The critical insight: **milestones should be sized for parallelization**. Group work by independence, not by category. Two milestones that touch different outputs can run simultaneously. Two that depend on each other's results cannot.
+| Milestone | Model | Status | Duration (min) | Notes |
+|-----------|-------|--------|----------------|-------|
+| M1: Setup | Sonnet | ⬜ Not Started | — | Foundation work |
+| M2: Data Model | Sonnet | ⬜ Not Started | — | Depends on M1 |
 
-> **Shortcut**: The `/make-planning-document` custom command generates all of this with consistent formatting, parallel execution groups, and a progress log. See [Accelerating with Custom Commands](#accelerating-with-custom-commands).
+Track duration when milestones complete — this builds estimation intuition over time.
+
+**b) Table of contents**: Linked anchors to every major section. Makes the document navigable as it grows.
+
+**c) Milestones with section organization**: Each milestone gets its own section with a clear header, descriptive text, and a model recommendation. Include a "Return to Top" link at the end of each section. Model guidelines:
+
+- **Haiku**: Mechanical/boilerplate work, simple CRUD, straightforward UI, basic tests
+- **Sonnet**: Most feature work, moderate complexity, well-defined tasks
+- **Opus**: Complex architecture, nuanced decisions, ambiguous requirements
+
+**d) Checkboxed task items**: Every actionable item gets a `- [ ]` checkbox. Items should be specific and measurable — "Implement user login endpoint with JWT" not "Handle auth." Include a note in each milestone that **workers must complete ALL listed items**. If a worker thinks an item should be deferred, they note it in their summary but still attempt the work.
+
+**e) Work organization**: Choose the structure that fits the content — by functional category (Backend, Frontend, DevOps), by phase (MVP, Beta, Production), or by timeline. Break complex items into smaller trackable tasks.
+
+**f) Progress log**: A dedicated section at the end for reverse-chronological entries tracking execution:
+
+```
+**2025-06-15 14:32** - Completed M3 (Venues API). 9 endpoints, all tests passing.
+Deviation: Added branding endpoint not in original spec per user request.
+
+**2025-06-15 10:15** - Started Wave 2 with 3 parallel agents (M3, M4, M5).
+```
+
+Use full timestamps (date AND time) — this captures the real timeline of execution.
+
+**g) Parallel development recommendations**: Analyze which milestones can run simultaneously:
+
+- Group independent milestones into **parallel waves** (e.g., Wave 1: M1-M2 sequential, Wave 2: M3+M4+M5 parallel)
+- Identify **sequential blockers** that must complete before others start
+- Note any milestones that are **sequential blockers** — everything downstream waits for these
+
+**h) Gap-filling guidance**: When a milestone has incomplete work, follow-up prompts should include what was already done, which files were modified, and only the remaining unchecked items. Label these clearly (e.g., "Milestone 3 — Gap Fill").
+
+**i) Context management note**: For large projects, the orchestrator context may fill up. Note that the user can run `/compact` while waiting for workers, and resume by re-reading the planning doc and any saved state.
+
+#### The critical insight
+
+**Milestones should be sized for parallelization.** Group work by independence, not by category. Two milestones that touch different outputs can run simultaneously. Two that depend on each other's results cannot.
+
+> **Shortcut**: The `/make-planning-document` custom command generates all nine structural elements (a–i) with consistent formatting every time. Worth adopting because the format has many interlocking parts — the tracker table, checkbox format, progress log timestamps, parallel groupings, gap-filling guidance — and getting them consistent manually across projects takes effort. The command encodes all of this so you can focus on content, not structure. See [Accelerating with Custom Commands](#accelerating-with-custom-commands).
 
 **Output**: `ProjectName-Planning.md` with milestones
 
@@ -106,42 +172,69 @@ Execute the foundation milestones sequentially. These are the ones everything el
 
 This is where the magic happens. Group remaining milestones into waves based on their dependency chains. Independent milestones run simultaneously, dependent ones wait for their prerequisites.
 
+#### Setting up orchestration
+
+Before dispatching the first wave, set up a lightweight coordination structure:
+
+1. **Create an `.orchestrator/` folder** in the project root (add it to `.gitignore`)
+2. **Save session state** in `.orchestrator/state.json` — track which planning doc you're using, which workers are active, and which summaries you've processed
+3. **Choose a prompt delivery mode**: Either display prompts inline (copy/paste from the orchestrator window) or save them to `.orchestrator/prompts/` as markdown files workers can read directly
+
+This state file is your recovery point. If your orchestrator context fills up, you can `/compact` or start a new window and resume by reading the state.
+
+#### How to write worker prompts
+
+Each worker prompt must be completely self-contained — the agent has no access to your main window's context. Every prompt should include these six components:
+
+1. **Header**: "Worker Context: [Milestone Name]" — makes it clear what this agent is responsible for
+
+2. **Mission statement**: Explain they are a worker handling a specific milestone. They should complete the work, write a summary, and close the context. One milestone per worker — no scope creep.
+
+3. **Planning document reference**: Path to the planning doc for READ-ONLY context. Include this warning:
+   > **IMPORTANT: Do NOT edit the planning document.** The orchestrator is the only context that updates the planning doc. You may READ it for reference, but never modify it.
+
+4. **Milestone details**: Copy the relevant milestone section from the planning doc including all checkboxed tasks, relevant file paths, and the model recommendation. Emphasize that **ALL listed tasks must be completed** — workers should not skip items they consider low priority.
+
+5. **Parallel work awareness**: List other active workers and what directories they're working in. Instruct this worker to avoid those areas and flag any conflicts.
+
+6. **Completion instructions** (in this exact order):
+   - **FIRST**: Commit all code changes for this milestone
+   - **SECOND**: Write a summary to `.orchestrator/worker-summary-[milestone-slug].md` including: status (Completed/Blocked/Partial), work completed, files modified, test status, issues or blockers, start and end time
+   - **DO NOT** edit the planning document
+   - **LAST**: Tell the user the milestone is complete and prompt them to close/clear the context
+
 #### How to dispatch
 
 Open multiple Claude Code terminal windows (3-4 is the sweet spot). For each wave:
 
 1. **Identify** the next set of independent milestones from your planning doc
-2. **Write a self-contained prompt** for each milestone — include everything the agent needs (file paths, patterns to follow, references, deliverables). The agent has no access to your main window's context, so the prompt IS the context.
+2. **Write a self-contained prompt** for each milestone using the six-component structure above
 3. **Paste each prompt** into a separate Claude Code window
-4. **Wait** for all windows to report completion
-5. **Verify** results — check outputs, run tests if applicable, confirm consistency
-6. **Update** your planning doc (check off completed milestones)
-7. **Repeat** for the next wave
+4. **Update your planning doc** — mark dispatched milestones as "In Progress"
+5. **Wait** for all windows to report completion
+6. **Process summaries** — read each `.orchestrator/worker-summary-*.md`, check for issues, and update the planning doc (mark complete, record duration, check off task items, add a progress log entry with full timestamp)
+7. **Verify** results — check outputs, run tests if applicable, confirm consistency across workers
+8. **Handle gaps** — if a worker's summary shows incomplete work, generate a gap-filling prompt that references what was already done and lists only the remaining unchecked items
+9. **Repeat** for the next wave
+
+#### Maintaining the dashboard
+
+Keep a mental (or written) dashboard of orchestration state:
+
+- Which workers are active and what they're working on
+- Which milestones are complete, in progress, or blocked
+- Any pending summaries that need processing
+- Any alerts from workers who hit blockers
+
+After processing each summary, update the planning doc's progress tracker table with the completion status and duration.
 
 **Reusing windows with `/clear`**: After an agent finishes a milestone, run `/clear` in that window to reset the context. This keeps all permission grants (file write, bash, etc.) while freeing the full context budget for the next milestone. Over a multi-wave project, this avoids re-granting permissions dozens of times. Always prefer `/clear` over opening new windows.
 
 **Model selection**: Each window can run a different model. Use Haiku for straightforward milestones and Opus for complex ones — set the model per window to match the planning doc's recommendations.
 
-**Example orchestrator output** (what you'd prepare for yourself, or what the `/orchestrator` command generates):
+**Context management**: If your orchestrator window is getting full from processing many waves, save the current state to `.orchestrator/state.json`, run `/compact`, and resume by re-reading the state file and planning doc.
 
-```
-=== Wave 2 Ready ===
-
-You have 3 idle Claude Code windows from the previous wave.
-
-Window 1 (Sonnet): Run /clear, then paste:
-  → [Milestone prompt...]
-
-Window 2 (Sonnet): Run /clear, then paste:
-  → [Milestone prompt...]
-
-Window 3 (Haiku): Run /clear, then paste:
-  → [Milestone prompt...]
-
-When all windows report completion, verify and move to Wave 3.
-```
-
-> **Shortcut**: The `/orchestrator` custom command automates wave analysis, prompt generation, and verification. See [Accelerating with Custom Commands](#accelerating-with-custom-commands).
+> **Shortcut**: The `/orchestrator` custom command automates the entire coordination loop — state management, dashboard display, prompt generation with all six components, summary processing, gap-filling, and context management. Worth adopting because manual orchestration requires holding a lot of moving pieces (active workers, pending summaries, dependency chains, prompt formatting) and the command handles all of it consistently. It also enforces rules that are easy to forget manually, like the "workers must not edit the planning doc" constraint and the commit-before-summary ordering. See [Accelerating with Custom Commands](#accelerating-with-custom-commands).
 
 #### Key principles:
 
@@ -150,6 +243,7 @@ When all windows report completion, verify and move to Wave 3.
 - **Shared read, exclusive write**: All agents can read the foundation. Only one should write to any given output.
 - **Verify between waves**: Check results between waves. Catch issues early before the next wave builds on top.
 - **Include `CLAUDE.md` reference**: Every prompt should tell the agent to read the project's `CLAUDE.md` first.
+- **Only the orchestrator edits the planning doc**: Workers read it for context but never modify it. This prevents merge conflicts and keeps one source of truth.
 
 ---
 
@@ -179,7 +273,7 @@ Once the plan is fully complete, archive it to keep the project root clean:
 - **Update the docs index**: Add a link to the archived doc in `docs/README.md`. Create the README if it doesn't exist.
 - **Commit**: Stage the move, the cleaned doc, and the index update as a single commit
 
-> **Shortcut**: The `/archive-planning-document` command does all of this automatically — cleaning, renaming, moving, updating the index, and committing. See [Accelerating with Custom Commands](#accelerating-with-custom-commands).
+> **Shortcut**: The `/archive-planning-document` command does all of this automatically — identifying the doc, previewing changes before acting, cleaning code blocks, renaming, moving, updating the index, and committing. Worth adopting because the cleaning step (deciding what to remove vs. preserve) is tedious to do manually and easy to get inconsistent. The command also confirms every step before executing, so you maintain control without doing the mechanical work. See [Accelerating with Custom Commands](#accelerating-with-custom-commands).
 
 ---
 
@@ -194,6 +288,30 @@ Once the plan is fully complete, archive it to keep the project root clean:
 4. **Context Isolation** — Each agent gets its own context window. The orchestrator stays lean — it coordinates but doesn't hold implementation details.
 
 5. **Dependency-Aware Scheduling** — Milestones are grouped by independence, not category. Sequential where necessary, parallel where possible.
+
+---
+
+## Handling Scope Changes
+
+If requirements change mid-execution:
+
+1. **Pause** — stop dispatching new waves
+2. **Update the planning document** — revise affected milestones, add new ones, adjust dependencies
+3. **Resume** — continue from where you left off with the updated plan
+
+Don't restart from scratch. The foundation and completed waves are still valid. Adjust the remaining work to reflect the new direction.
+
+---
+
+## The Most Underused Shortcut: Escape
+
+Press `Esc` at any point to interrupt Claude mid-response. This single habit changes the entire dynamic:
+
+- **Course-correct early** — if you see the agent heading in the wrong direction, don't wait for it to finish. Interrupt, redirect, save yourself a tangent. A 2-second correction beats a 2-minute redo.
+- **Add an afterthought** — remembered a constraint mid-response? Hit `Esc`, add it, let Claude continue with the new context.
+- **Stay in the loop** — the process works best when you're actively steering, not passively watching. The earlier you catch a drift, the less work gets thrown away.
+
+This applies everywhere — during interviews, while reviewing planning docs, during orchestration, while agents are working. Don't be precious about interrupting. It's not rude and it doesn't break anything.
 
 ---
 

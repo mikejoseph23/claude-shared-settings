@@ -1,140 +1,108 @@
-# Claude Code Workflow Guide
+# Quickstart: Idea to Done with Custom Commands
 
-A structured process for planning, developing, and testing features with Claude Code.
+A fast-track companion to [The Secret Sauce](secret-sauce.md). This guide walks you through the same process using custom command shortcuts and tells you what to expect at each step.
 
-## Quick Reference
+Read the full guide first if you want to understand the *why* behind each phase. This doc is for when you already get the process and just want to move.
 
-```
-1. Enter planning mode     → Type: "Enter planning mode" or press Shift+Tab and select Plan
-2. State objective         → Describe what you want to build
-3. /iadev:planning-interview    → Answer questions to gather requirements
-4. /iadev:make-planning-document → Convert interview into structured plan
-5. /iadev:orchestrator          → Coordinate parallel development
-6. Unit tests              → Written during development milestones
-7. Manual testing          → Validate complete user experience
-8. E2E tests (optional)    → Playwright tests for regression protection
-9. /iadev:archive-planning-document → Move completed plan to docs/
-```
+---
 
-## The Workflow
+## Before You Start
 
-### Step 1: Enter Planning Mode
+**Have your idea ready.** A few paragraphs in an `Idea.txt` — the problem, the goal, any initial thoughts. Casual is fine.
 
-Tell Claude Code to enter planning mode before starting a new feature. This can be done by:
-- Typing "Enter planning mode" or "Let's plan this feature"
-- Pressing `Shift+Tab` and selecting "Plan"
+**Know your escape key.** Press `Esc` at any point to interrupt Claude mid-response. This is one of the most powerful habits you can build:
 
-**Why?** Planning mode focuses on exploration and design without making code changes. Claude will investigate the codebase and design an approach before implementation.
+- **Course-correct early** — if you see the agent heading in the wrong direction, don't wait for it to finish. Interrupt, redirect, and save yourself a tangent.
+- **Add an afterthought** — remembered something important mid-response? Hit `Esc`, add your thought, and let it continue with the new context.
+- **Don't be precious about it** — interrupting isn't rude and it doesn't break anything. A 2-second course correction beats a 2-minute redo. The earlier you catch a drift, the less work gets thrown away.
 
-### Step 2: State Your Objective
+This applies throughout the entire workflow — during interviews, while reviewing planning docs, during orchestration. Stay engaged and steer actively.
 
-Describe what you want to build. This workflow handles entire applications or major features:
+---
 
-- **Full application:** "Build an e-commerce platform for ordering grass and turf products. Customers browse a catalog, add items to cart, and checkout. Admins manage orders and inventory."
-- **Major feature:** "Add a complete order management system with order creation, status tracking, email notifications, admin dashboard, and reporting."
-- **Feature set:** "Implement the customer portal: account registration, order history, saved addresses, and profile management."
+## The Flow
 
-The planning interview will dig into requirements, edge cases, and technical decisions - so a high-level description is enough to start.
+### 1. Seed
 
-### Step 3: Run Planning Interview
+Drop your `Idea.txt` into the project directory and reference it in conversation.
+
+### 2. Requirements Interview
 
 ```
-/iadev:planning-interview
+/planning-interview
 ```
 
-This asks questions one at a time about requirements, edge cases, and technical decisions. Continue until:
-- Edge cases are reaching exhaustion
-- Requirements feel complete
-- You're not finding new scenarios
+**What to expect:** Claude asks you questions one at a time — scope, constraints, users, edge cases. Answer naturally. After 5-10 questions, it automatically shifts into a rapid-fire gap-filling mode, probing for edge cases and assumptions you haven't considered.
 
-Thorough planning here saves time later.
+**When it's done:** Questions start feeling unlikely or trivial. That's your signal — the gaps are closed.
 
-### Step 4: Create Structured Planning Document
+**Your job:** Answer honestly. "I don't know" and "whatever makes sense" are valid. Don't overthink — you can course-correct later.
 
-```
-/iadev:make-planning-document
-```
-
-Converts the interview output into a structured document with milestones and tasks that the orchestrator can execute.
-
-### Step 5: Coordinate Parallel Development
+### 3. Planning Document
 
 ```
-/iadev:orchestrator
+/make-planning-document
 ```
 
-The orchestrator reads the planning document, identifies dependencies, and coordinates parallel Claude Code instances. It handles parallelization automatically - you don't need to manage it.
+**What to expect:** Claude transforms the interview into a structured planning doc with a milestone tracker table, checkboxed tasks, dependency analysis, parallel wave groupings, and model recommendations (Haiku/Sonnet/Opus) per milestone. You'll be asked if you want to use Haiku for simpler milestones — say yes if you're watching usage limits.
 
-### Step 6: Development with Unit Tests
+**When it's done:** You have a `ProjectName-Planning.md` with everything the orchestrator needs.
 
-As the orchestrator works through milestones:
-- Unit tests are developed alongside code
-- Development follows patterns in `CLAUDE.md`
-- Each instance works independently on assigned tasks
+**Your job:** Review the milestones and dependencies. Make sure the parallel groupings make sense and nothing critical is missing.
 
-Let the orchestrator complete all milestones before moving on.
+### 4. Foundation
 
-### Step 7: Manual Testing
+Execute the first milestone(s) sequentially in your main Claude Code window. These are the setup, structure, and shared patterns that everything else builds on.
 
-Once development completes:
-- Test implemented features manually
-- Validate complete workflows end-to-end
-- Fix issues within the testing context if bugs are found
+**Tip:** Create a `CLAUDE.md` at the project root during this phase. Every parallel agent will inherit these conventions automatically.
 
-### Step 8: End-to-End Tests (Optional)
-
-After manual testing passes, optionally create E2E tests:
-- Use Playwright for browser-based testing
-- Run tests in headed mode (`--headed`)
-- Follow patterns established in the codebase
-
-### Step 9: Cleanup and Documentation
-
-When everything works:
+### 5. Parallel Waves
 
 ```
-/iadev:archive-planning-document
+/orchestrator
 ```
 
-This moves the planning document to `docs/` for future reference.
+**What to expect:** The orchestrator reads your planning doc, shows a dashboard of milestone status, and generates self-contained prompts for each wave. It tells you which prompts to paste into which Claude Code windows, and which model to use for each.
 
-## Handling Scope Changes
+**When a wave completes:** Workers write summaries to `.orchestrator/`. Tell the orchestrator to "check for updates" — it processes summaries, updates the planning doc, and suggests the next wave.
 
-If requirements change mid-development:
+**Your job:** Open 3-4 Claude Code terminal windows. Paste prompts, wait for completion, tell the orchestrator to process results. Repeat until all milestones are done.
 
-1. **Pause** - Stop current work
-2. **Update** - Revise the planning document
-3. **Resume** - Continue with the updated plan
+**Pro tip — reuse windows with `/clear`:** After a worker finishes, run `/clear` in that window instead of opening a new one. This resets the context but keeps all permission grants, saving you from re-approving file writes and bash access every wave.
 
-Don't restart from scratch.
+### 6. Verify & Archive
 
-## Context Efficiency and Model Selection
+Once all waves are done:
 
-### Why This Workflow is Efficient
+1. **Verify** — run builds, tests, or review deliverables against the milestone checklists
+2. **Summarize** — ask Claude to generate a summary of everything accomplished
+3. **Archive** — run the command below to clean up and move the planning doc to `docs/`
 
-Worker contexts spawned by the orchestrator rarely hit context window limits. Well-scoped milestones mean each worker completes its unit of work with context to spare. This makes the workflow both fast and cost-effective.
+```
+/archive-planning-document
+```
 
-### Model Selection
+---
 
-The `make-planning-document` command determines which model to use for each milestone. Using less capable models for simpler work saves on usage limits - valuable for team members on cheaper plans.
+## Tips That Compound
 
-| Model | Use For |
-|-------|---------|
-| **Haiku** | Mechanical/boilerplate work, simple CRUD, straightforward UI components, basic tests |
-| **Sonnet** | Most feature work, moderate complexity, standard implementations |
-| **Opus** | Complex architecture, tricky integrations, nuanced requirements |
+- **`Esc` early, `Esc` often** — course-correcting in the first 10 seconds saves minutes of wasted work. Don't let a wrong direction play out.
+- **`/clear` between waves** — permission grants persist, context resets. Faster than new windows.
+- **Model matching matters** — Haiku for boilerplate, Sonnet for features, Opus for architecture. The planning doc recommends one per milestone.
+- **`CLAUDE.md` is the bridge** — conventions you write once propagate to every parallel agent automatically.
+- **Scope changes aren't restarts** — pause, update the planning doc, resume. Completed work stays valid.
 
-When creating the planning document, you'll be asked if you want to use Haiku for simpler milestones. Max plan subscribers may skip this, but team members with usage limits benefit significantly.
-
-## Key Principle: CLAUDE.md
-
-Throughout the workflow, `CLAUDE.md` guides all decisions: code patterns, database naming, error handling, DateTime usage, and more. The orchestrator and all Claude instances follow these rules automatically.
+---
 
 ## Command Reference
 
-| Command | Purpose |
-|---------|---------|
-| `/iadev:planning-interview` | Interactive requirements gathering |
-| `/iadev:make-planning-document` | Create structured planning document |
-| `/iadev:orchestrator` | Coordinate parallel development |
-| `/iadev:archive-planning-document` | Archive completed plan to docs/ |
+| Command | Phase | What It Does |
+|---------|-------|-------------|
+| `/planning-interview` | 2 | Interactive requirements gathering with automatic gap-filling |
+| `/make-planning-document` | 3 | Structured planning doc with milestones, dependencies, and parallel groups |
+| `/orchestrator` | 5 | Coordinates parallel agents — prompts, dashboards, summary processing |
+| `/archive-planning-document` | 6 | Cleans, renames, moves plan to `docs/`, updates index, commits |
+
+For the full process with detailed manual instructions for every phase, see [The Secret Sauce](secret-sauce.md).
+
+For setup instructions (installing commands, shared settings), see [setup.md](setup.md).
