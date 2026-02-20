@@ -200,7 +200,7 @@ Every phase above can be done with plain conversation. But if you find yourself 
 | `/orchestrator` | Phase 5 | Wave analysis, prompt generation, dispatch instructions, verification |
 | `/archive-planning-document` | Phase 6 | Archives completed plan to docs folder |
 
-Custom commands are markdown files stored in `~/.claude/commands/`. The filename becomes the slash command. For setup and sharing instructions, see [setup.md](setup.md).
+Custom commands are markdown files stored in `~/.claude/commands/`. The filename becomes the slash command. The commands used in this recipe are available at [github.com/mikejoseph23/claude-shared-settings](https://github.com/mikejoseph23/claude-shared-settings/). For setup instructions, see [setup.md](setup.md).
 
 The compounding effect: each command is tuned through real usage. Refinements accumulate — every project benefits from lessons learned in previous ones.
 
