@@ -160,16 +160,44 @@ Read `.orchestrator/worker-summary-[milestone].md`
 - Mark the milestone as complete (or blocked) in the Milestone Progress Tracker table
 - **Calculate and record duration**: Use the start/end times from the worker's summary to calculate duration in minutes and update the "Duration (min)" column
 - Add entry to Progress Log section with **full timestamp (YYYY-MM-DD HH:MM)** and summary of work done
-- **Check off completed task checkboxes**: Cross-reference the worker's summary against the milestone's task list and change `- [ ]` to `- [x]` for each completed item. Leave uncompleted items unchecked for visibility into what remains.
 
-### 4. Clean Up
+### 4. Check Off Completed Task Checkboxes
+
+**This step is critical and must not be skipped.** After updating the progress tracker table and log, you MUST also update the individual task checkboxes within the milestone's section of the planning document.
+
+**Process:**
+
+1. **Locate the milestone section** in the planning document — find the heading for the completed milestone (e.g., `### Milestone 3: API Endpoints`)
+2. **Read the worker's summary** to identify which tasks were completed (look at the "Work completed" section)
+3. **For each completed task**, find the corresponding `- [ ]` checkbox line in the milestone section and change it to `- [x]`
+4. **Leave uncompleted items as `- [ ]`** for visibility into what remains (relevant for partial completions or gap-fills)
+
+**Example:** If the milestone section contains:
+
+```text
+- [ ] Create user model
+- [ ] Add validation logic
+- [ ] Write unit tests
+```
+
+And the worker summary says all three were completed, update to:
+
+```text
+- [x] Create user model
+- [x] Add validation logic
+- [x] Write unit tests
+```
+
+**Important:** The progress tracker table at the top (marking a milestone row as "Done") is NOT the same as checking off individual task checkboxes within the milestone section. You must do BOTH.
+
+### 5. Clean Up
 
 - Move processed summary to `.orchestrator/processed/` (for reference)
 - Update `.orchestrator/state.json`
 - Remove worker from active list
 - Update dashboard
 
-### 5. Suggest Next Steps
+### 6. Suggest Next Steps
 
 If there are no alerts and more milestones are available:
 
